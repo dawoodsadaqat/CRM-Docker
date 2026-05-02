@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "views/api_config_views.xml",
         "views/menu.xml",
+	"views/api_log_views.xml",
     ],
     "installable": True,
     "application": False,
