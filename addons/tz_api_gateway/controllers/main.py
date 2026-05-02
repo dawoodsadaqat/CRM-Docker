@@ -112,8 +112,22 @@ class TzApiGateway(http.Controller):
             self._log_api(config, payload, response, "failed", 400, error="Invalid lead_temperature")
             return self._json(response, 400)
 
-        duplicate_domain = ["|", ("phone", "=", phone), ("email_from", "=", email)]
-        existing = request.env["crm.lead"].sudo().search(duplicate_domain, limit=1)
+        # ✅ FIXED DUPLICATE CHECK
+        duplicate_domain = []
+
+        if phone:
+            duplicate_domain.append(("phone", "=", phone))
+
+        if email:
+            if duplicate_domain:
+                duplicate_domain = ["|"] + duplicate_domain + [("email_from", "=", email)]
+            else:
+                duplicate_domain.append(("email_from", "=", email))
+
+        existing = False
+
+        if duplicate_domain:
+            existing = request.env["crm.lead"].sudo().search(duplicate_domain, limit=1)
 
         if existing:
             response = {
@@ -124,6 +138,7 @@ class TzApiGateway(http.Controller):
             self._log_api(config, payload, response, "failed", 409, lead=existing, error="Duplicate lead")
             return self._json(response, 409)
 
+        # UTM
         utm_source = self._get_or_create_utm(
             "utm.source",
             payload.get("utm_source") or payload.get("source")

@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields
 from datetime import datetime, time
 
 
@@ -12,15 +12,23 @@ class TzCrmDashboard(models.Model):
     date_to = fields.Date(string="Date To")
     agent_id = fields.Many2one("res.users", string="Agent")
     source_id = fields.Many2one("utm.source", string="Lead Source")
+    campaign_id = fields.Many2one("utm.campaign", string="Campaign")
 
     total_leads = fields.Integer(string="Total Leads", compute="_compute_dashboard")
-    hot_leads = fields.Integer(string="Hot Leads", compute="_compute_dashboard")
-    overdue_followups = fields.Integer(string="Follow-ups Overdue", compute="_compute_dashboard")
-    site_visits_scheduled = fields.Integer(string="Site Visits Scheduled", compute="_compute_dashboard")
-    deals_won = fields.Integer(string="Deals Won", compute="_compute_dashboard")
+    contacted_leads = fields.Integer(string="Contacted", compute="_compute_dashboard")
+    site_visit_leads = fields.Integer(string="Site Visits", compute="_compute_dashboard")
+    negotiation_leads = fields.Integer(string="Negotiation", compute="_compute_dashboard")
+    won_leads = fields.Integer(string="Won Leads", compute="_compute_dashboard")
     lost_leads = fields.Integer(string="Lost Leads", compute="_compute_dashboard")
-    revenue_pipeline = fields.Float(string="Revenue Pipeline", compute="_compute_dashboard")
-    commission_payable = fields.Float(string="Commission Payable", compute="_compute_dashboard")
+
+    lead_to_visit_rate = fields.Float(string="Lead to Visit %", compute="_compute_dashboard")
+    lead_to_won_rate = fields.Float(string="Lead to Won %", compute="_compute_dashboard")
+
+    revenue_won = fields.Float(string="Won Revenue", compute="_compute_dashboard")
+    pipeline_value = fields.Float(string="Pipeline Value", compute="_compute_dashboard")
+
+    best_campaign = fields.Char(string="Best Campaign", compute="_compute_dashboard")
+    worst_campaign = fields.Char(string="Worst Campaign", compute="_compute_dashboard")
 
     def _get_lead_domain(self):
         domain = []
@@ -37,63 +45,78 @@ class TzCrmDashboard(models.Model):
         if self.source_id:
             domain.append(("source_id", "=", self.source_id.id))
 
+        if self.campaign_id:
+            domain.append(("campaign_id", "=", self.campaign_id.id))
+
         return domain
 
     def _compute_dashboard(self):
         Lead = self.env["crm.lead"]
-        SiteVisit = self.env["tz.site.visit"]
-        Commission = self.env["tz.commission"]
 
         for rec in self:
-            lead_domain = rec._get_lead_domain()
+            domain = rec._get_lead_domain()
 
-            rec.total_leads = Lead.search_count(lead_domain)
+            total = Lead.search_count(domain)
+            contacted = Lead.search_count(domain + [("conversion_stage", "=", "contacted")])
+            visits = Lead.search_count(domain + [("conversion_stage", "=", "site_visit")])
+            negotiation = Lead.search_count(domain + [("conversion_stage", "=", "negotiation")])
+            won = Lead.search_count(domain + [("conversion_stage", "=", "won")])
+            lost = Lead.search_count(domain + [("conversion_stage", "=", "lost")])
 
-            rec.hot_leads = Lead.search_count(
-                lead_domain + [("lead_temperature", "=", "hot")]
-            )
+            leads = Lead.search(domain)
+            won_leads = leads.filtered(lambda l: l.conversion_stage == "won")
+            pipeline_leads = leads.filtered(lambda l: l.conversion_stage in ["new", "contacted", "site_visit", "negotiation"])
 
-            rec.overdue_followups = Lead.search_count(
-                lead_domain + [
-                    ("next_followup_date", "!=", False),
-                    ("next_followup_date", "<", fields.Datetime.now()),
-                ]
-            )
+            rec.total_leads = total
+            rec.contacted_leads = contacted
+            rec.site_visit_leads = visits
+            rec.negotiation_leads = negotiation
+            rec.won_leads = won
+            rec.lost_leads = lost
 
-            rec.deals_won = Lead.search_count(
-                lead_domain + [("stage_id.is_won", "=", True)]
-            )
+            rec.lead_to_visit_rate = (visits / total * 100) if total else 0
+            rec.lead_to_won_rate = (won / total * 100) if total else 0
 
-            rec.lost_leads = Lead.search_count(
-                lead_domain + [("active", "=", False)]
-            )
+            rec.revenue_won = sum(won_leads.mapped("deal_value"))
+            rec.pipeline_value = sum(pipeline_leads.mapped("deal_value"))
 
-            pipeline_leads = Lead.search(lead_domain)
-            rec.revenue_pipeline = sum(pipeline_leads.mapped("expected_revenue"))
+            rec.best_campaign = rec._get_campaign_performance(best=True)
+            rec.worst_campaign = rec._get_campaign_performance(best=False)
 
-            visit_domain = [("status", "in", ["scheduled", "confirmed"])]
+    def _get_campaign_performance(self, best=True):
+        Lead = self.env["crm.lead"]
+        campaigns = Lead.search([
+            ("campaign_id", "!=", False)
+        ]).mapped("campaign_id")
 
-            if rec.date_from:
-                visit_domain.append(("visit_datetime", ">=", datetime.combine(rec.date_from, time.min)))
+        if not campaigns:
+            return "No campaign data"
 
-            if rec.date_to:
-                visit_domain.append(("visit_datetime", "<=", datetime.combine(rec.date_to, time.max)))
+        results = []
 
-            if rec.agent_id:
-                visit_domain.append(("agent_id", "=", rec.agent_id.id))
+        for campaign in campaigns:
+            total = Lead.search_count([("campaign_id", "=", campaign.id)])
+            won = Lead.search_count([
+                ("campaign_id", "=", campaign.id),
+                ("conversion_stage", "=", "won")
+            ])
 
-            rec.site_visits_scheduled = SiteVisit.search_count(visit_domain)
+            rate = (won / total * 100) if total else 0
 
-            commission_domain = [
-                ("approval_status", "=", "approved"),
-                ("payment_status", "in", ["unpaid", "partially_paid"]),
-            ]
+            results.append({
+                "name": campaign.name,
+                "rate": rate,
+                "total": total,
+                "won": won,
+            })
 
-            if rec.agent_id:
-                commission_domain.append(("agent_id", "=", rec.agent_id.id))
+        results = sorted(results, key=lambda x: x["rate"], reverse=best)
 
-            commissions = Commission.search(commission_domain)
-            rec.commission_payable = sum(commissions.mapped("remaining_amount"))
+        if not results:
+            return "No campaign data"
+
+        result = results[0]
+        return f"{result['name']} - {result['rate']:.1f}% ({result['won']}/{result['total']})"
 
     def action_refresh_dashboard(self):
         return {
@@ -109,50 +132,4 @@ class TzCrmDashboard(models.Model):
             "res_model": "crm.lead",
             "view_mode": "tree,form",
             "domain": self._get_lead_domain(),
-        }
-
-    def action_open_hot_leads(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Hot Leads",
-            "res_model": "crm.lead",
-            "view_mode": "tree,form",
-            "domain": self._get_lead_domain() + [("lead_temperature", "=", "hot")],
-        }
-
-    def action_open_overdue_followups(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Overdue Follow-ups",
-            "res_model": "crm.lead",
-            "view_mode": "tree,form",
-            "domain": self._get_lead_domain() + [
-                ("next_followup_date", "!=", False),
-                ("next_followup_date", "<", fields.Datetime.now()),
-            ],
-        }
-
-    def action_open_site_visits(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Scheduled Site Visits",
-            "res_model": "tz.site.visit",
-            "view_mode": "tree,form",
-            "domain": [("status", "in", ["scheduled", "confirmed"])],
-        }
-
-    def action_open_commissions(self):
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Commission Payable",
-            "res_model": "tz.commission",
-            "view_mode": "tree,form",
-            "domain": [
-                ("approval_status", "=", "approved"),
-                ("payment_status", "in", ["unpaid", "partially_paid"]),
-            ],
         }
