@@ -1,0 +1,95 @@
+<odoo>
+    <record id="view_tz_call_log_tree" model="ir.ui.view">
+        <field name="name">tz.call.log.tree</field>
+        <field name="model">tz.call.log</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="call_datetime"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="phone_number"/>
+                <field name="call_direction"/>
+                <field name="call_status"/>
+                <field name="disposition"/>
+                <field name="duration_seconds"/>
+                <field name="next_followup_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_call_log_form" model="ir.ui.view">
+        <field name="name">tz.call.log.form</field>
+        <field name="model">tz.call.log</field>
+        <field name="arch" type="xml">
+            <form string="Call Log">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="lead_id"/>
+                            <field name="customer_id"/>
+                            <field name="agent_id"/>
+                            <field name="phone_number"/>
+                            <field name="call_datetime"/>
+                        </group>
+
+                        <group>
+                            <field name="call_direction"/>
+                            <field name="call_status"/>
+                            <field name="disposition"/>
+                            <field name="duration_seconds"/>
+                            <field name="next_followup_date"/>
+                            <field name="recording_url"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_call_log_search" model="ir.ui.view">
+        <field name="name">tz.call.log.search</field>
+        <field name="model">tz.call.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="phone_number"/>
+                <field name="call_status"/>
+                <field name="disposition"/>
+
+                <filter string="Outgoing" name="outgoing" domain="[('call_direction','=','outgoing')]"/>
+                <filter string="Incoming" name="incoming" domain="[('call_direction','=','incoming')]"/>
+                <filter string="Connected" name="connected" domain="[('call_status','=','connected')]"/>
+                <filter string="Not Answered" name="not_answered" domain="[('call_status','=','not_answered')]"/>
+                <filter string="Wrong Number" name="wrong_number" domain="[('call_status','=','wrong_number')]"/>
+                <filter string="Call Back" name="call_back" domain="[('disposition','=','call_back')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Agent" name="group_agent" context="{'group_by':'agent_id'}"/>
+                    <filter string="Direction" name="group_direction" context="{'group_by':'call_direction'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'call_status'}"/>
+                    <filter string="Disposition" name="group_disposition" context="{'group_by':'disposition'}"/>
+                    <filter string="Call Date" name="group_call_date" context="{'group_by':'call_datetime'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_call_log" model="ir.actions.act_window">
+        <field name="name">Call Logs</field>
+        <field name="res_model">tz.call.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_call_log_search"/>
+    </record>
+</odoo>

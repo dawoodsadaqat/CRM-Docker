@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tz_site_visit_agent,tz.site.visit.agent,model_tz_site_visit,tz_crm_base.group_tz_crm_agent,1,1,1,0
+access_tz_site_visit_manager,tz.site.visit.manager,model_tz_site_visit,tz_crm_base.group_tz_crm_manager,1,1,1,1
+access_tz_site_visit_admin,tz.site.visit.admin,model_tz_site_visit,tz_crm_base.group_tz_crm_admin,1,1,1,1

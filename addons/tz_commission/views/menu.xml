@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_tz_commission_root"
+              name="Commissions"
+              parent="tz_crm_base.menu_tz_crm_root"
+              action="action_tz_commission"
+              sequence="60"/>
+</odoo>

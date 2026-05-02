@@ -1,0 +1,52 @@
+<odoo>
+    <record id="view_tz_assignment_rule_tree" model="ir.ui.view">
+        <field name="name">tz.assignment.rule.tree</field>
+        <field name="model">tz.assignment.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="assignment_type"/>
+                <field name="priority"/>
+                <field name="agent_ids" widget="many2many_tags"/>
+                <field name="last_assigned_user_id"/>
+                <field name="lead_count"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_assignment_rule_form" model="ir.ui.view">
+        <field name="name">tz.assignment.rule.form</field>
+        <field name="model">tz.assignment.rule</field>
+        <field name="arch" type="xml">
+            <form string="Assignment Rule">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                        <field name="assignment_type"/>
+                        <field name="priority"/>
+                    </group>
+
+                    <group string="Agents">
+                        <field name="agent_ids" widget="many2many_tags"/>
+                        <field name="last_assigned_user_id" readonly="1"/>
+                        <field name="lead_count" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_assignment_rule" model="ir.actions.act_window">
+        <field name="name">Assignment Rules</field>
+        <field name="res_model">tz.assignment.rule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tz_assignment_rule"
+              name="Assignment Rules"
+              parent="tz_crm_base.menu_tz_crm_config"
+              action="action_tz_assignment_rule"
+              sequence="20"/>
+</odoo>

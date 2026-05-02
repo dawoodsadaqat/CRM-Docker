@@ -1,17 +1,17 @@
 services:
   db:
     image: postgres:15
-    container_name: odoo-db
+    container_name: tz-odoo-db
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD: odoo
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data
+      - tz-odoo-db-data:/var/lib/postgresql/data
 
   odoo:
     image: odoo:17.0
-    container_name: odoo-app
+    container_name: tz-odoo-app
     depends_on:
       - db
     ports:
@@ -21,10 +21,11 @@ services:
       USER: odoo
       PASSWORD: odoo
     volumes:
-      - odoo-web-data:/var/lib/odoo
+      - tz-odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
       - ./config:/etc/odoo
+    command: -- --dev=reload
 
 volumes:
-  odoo-db-data:
-  odoo-web-data:
+  tz-odoo-db-data:
+  tz-odoo-web-data:

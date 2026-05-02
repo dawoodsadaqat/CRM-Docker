@@ -1,0 +1,123 @@
+<odoo>
+    <record id="view_tz_commission_tree" model="ir.ui.view">
+        <field name="name">tz.commission.tree</field>
+        <field name="model">tz.commission</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="property_unit_id"/>
+                <field name="sale_value"/>
+                <field name="commission_percent"/>
+                <field name="commission_amount"/>
+                <field name="approval_status"/>
+                <field name="payment_status"/>
+                <field name="paid_amount"/>
+                <field name="remaining_amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_commission_form" model="ir.ui.view">
+        <field name="name">tz.commission.form</field>
+        <field name="model">tz.commission</field>
+        <field name="arch" type="xml">
+            <form string="Commission">
+                <header>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn-primary"
+                            invisible="approval_status != 'draft'"/>
+
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="approval_status != 'submitted'"/>
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            invisible="approval_status != 'submitted'"/>
+
+                    <button name="action_reset_to_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="approval_status == 'draft'"/>
+
+                    <field name="approval_status"
+                           widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,rejected"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="lead_id"/>
+                            <field name="customer_id"/>
+                            <field name="agent_id"/>
+                            <field name="property_unit_id"/>
+                        </group>
+
+                        <group>
+                            <field name="sale_value"/>
+                            <field name="commission_percent"/>
+                            <field name="commission_amount" readonly="1"/>
+                            <field name="payment_status"/>
+                            <field name="paid_amount"/>
+                            <field name="remaining_amount" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Approval Note">
+                            <field name="approval_note"/>
+                        </page>
+
+                        <page string="Payment Note">
+                            <field name="payment_note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_commission_search" model="ir.ui.view">
+        <field name="name">tz.commission.search</field>
+        <field name="model">tz.commission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="property_unit_id"/>
+
+                <filter string="Draft" name="draft" domain="[('approval_status','=','draft')]"/>
+                <filter string="Submitted" name="submitted" domain="[('approval_status','=','submitted')]"/>
+                <filter string="Approved" name="approved" domain="[('approval_status','=','approved')]"/>
+                <filter string="Rejected" name="rejected" domain="[('approval_status','=','rejected')]"/>
+                <filter string="Unpaid" name="unpaid" domain="[('payment_status','=','unpaid')]"/>
+                <filter string="Paid" name="paid" domain="[('payment_status','=','paid')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Agent" name="group_agent" context="{'group_by':'agent_id'}"/>
+                    <filter string="Approval Status" name="group_approval_status" context="{'group_by':'approval_status'}"/>
+                    <filter string="Payment Status" name="group_payment_status" context="{'group_by':'payment_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_commission" model="ir.actions.act_window">
+        <field name="name">Commissions</field>
+        <field name="res_model">tz.commission</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_commission_search"/>
+    </record>
+</odoo>

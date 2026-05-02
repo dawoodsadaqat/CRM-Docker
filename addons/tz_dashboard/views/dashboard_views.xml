@@ -1,0 +1,113 @@
+<odoo>
+    <record id="view_tz_crm_dashboard_form" model="ir.ui.view">
+        <field name="name">tz.crm.dashboard.form</field>
+        <field name="model">tz.crm.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="CRM Dashboard">
+                <header>
+                    <button name="action_refresh_dashboard"
+                            string="Refresh"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+
+                <sheet>
+                    <group string="Filters">
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="agent_id"/>
+                            <field name="source_id"/>
+                        </group>
+                    </group>
+
+                    <separator string="Lead Metrics"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_leads"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-users">
+                            <field name="total_leads" widget="statinfo" string="Total Leads"/>
+                        </button>
+
+                        <button name="action_open_hot_leads"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-fire">
+                            <field name="hot_leads" widget="statinfo" string="Hot Leads"/>
+                        </button>
+
+                        <button name="action_open_overdue_followups"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-clock-o">
+                            <field name="overdue_followups" widget="statinfo" string="Overdue"/>
+                        </button>
+
+                        <button name="action_open_site_visits"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                            <field name="site_visits_scheduled" widget="statinfo" string="Site Visits"/>
+                        </button>
+
+                        <button name="action_open_leads"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-check">
+                            <field name="deals_won" widget="statinfo" string="Deals Won"/>
+                        </button>
+
+                        <button name="action_open_leads"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-times">
+                            <field name="lost_leads" widget="statinfo" string="Lost Leads"/>
+                        </button>
+
+                        <button name="action_open_leads"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-money">
+                            <field name="revenue_pipeline" widget="statinfo" string="Pipeline"/>
+                        </button>
+
+                        <button name="action_open_commissions"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-credit-card">
+                            <field name="commission_payable" widget="statinfo" string="Commission"/>
+                        </button>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_crm_dashboard_tree" model="ir.ui.view">
+        <field name="name">tz.crm.dashboard.tree</field>
+        <field name="model">tz.crm.dashboard</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="agent_id"/>
+                <field name="source_id"/>
+                <field name="total_leads"/>
+                <field name="hot_leads"/>
+                <field name="revenue_pipeline"/>
+                <field name="commission_payable"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_tz_crm_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">tz.crm.dashboard</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

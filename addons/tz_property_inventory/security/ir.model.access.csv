@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tz_property_project_agent,tz.property.project.agent,model_tz_property_project,tz_crm_base.group_tz_crm_agent,1,0,0,0
+access_tz_property_project_manager,tz.property.project.manager,model_tz_property_project,tz_crm_base.group_tz_crm_manager,1,1,1,1
+access_tz_property_project_admin,tz.property.project.admin,model_tz_property_project,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_property_building_agent,tz.property.building.agent,model_tz_property_building,tz_crm_base.group_tz_crm_agent,1,0,0,0
+access_tz_property_building_manager,tz.property.building.manager,model_tz_property_building,tz_crm_base.group_tz_crm_manager,1,1,1,1
+access_tz_property_building_admin,tz.property.building.admin,model_tz_property_building,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_property_unit_agent,tz.property.unit.agent,model_tz_property_unit,tz_crm_base.group_tz_crm_agent,1,0,0,0
+access_tz_property_unit_manager,tz.property.unit.manager,model_tz_property_unit,tz_crm_base.group_tz_crm_manager,1,1,1,1
+access_tz_property_unit_admin,tz.property.unit.admin,model_tz_property_unit,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_property_listing_agent,tz.property.listing.agent,model_tz_property_listing,tz_crm_base.group_tz_crm_agent,1,0,0,0
+access_tz_property_listing_manager,tz.property.listing.manager,model_tz_property_listing,tz_crm_base.group_tz_crm_manager,1,1,1,1
+access_tz_property_listing_admin,tz.property.listing.admin,model_tz_property_listing,tz_crm_base.group_tz_crm_admin,1,1,1,1

@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_tz_site_visit_root"
+              name="Site Visits"
+              parent="tz_crm_base.menu_tz_crm_root"
+              action="action_tz_site_visit"
+              sequence="30"/>
+</odoo>

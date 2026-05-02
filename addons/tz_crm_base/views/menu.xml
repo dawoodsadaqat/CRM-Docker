@@ -1,0 +1,10 @@
+<odoo>
+    <menuitem id="menu_tz_crm_root"
+              name="Techzilla CRM"
+              sequence="5"/>
+
+    <menuitem id="menu_tz_crm_config"
+              name="Configuration"
+              parent="menu_tz_crm_root"
+              sequence="100"/>
+</odoo>

@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_tz_api_config"
+              name="API Configurations"
+              parent="tz_crm_base.menu_tz_crm_config"
+              action="action_tz_api_config"
+              sequence="90"/>
+</odoo>
