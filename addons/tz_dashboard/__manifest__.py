@@ -15,6 +15,7 @@
         "security/ir.model.access.csv",
         "views/dashboard_views.xml",
  	"views/crm_lead_conversion_views.xml",
+	"views/agent_performance_views.xml",
         "views/menu.xml",
     ],
     "installable": True,
