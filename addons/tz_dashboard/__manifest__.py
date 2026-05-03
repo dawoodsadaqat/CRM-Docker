@@ -17,6 +17,8 @@
  	"views/crm_lead_conversion_views.xml",
 	"views/agent_performance_views.xml",
         "views/menu.xml",
+	"views/res_users_views.xml",
+	"data/followup_cron.xml",
     ],
     "installable": True,
     "application": False,

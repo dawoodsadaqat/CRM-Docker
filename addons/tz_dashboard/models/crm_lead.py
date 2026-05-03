@@ -2,6 +2,15 @@ from odoo import models, fields, api
 from datetime import timedelta
 
 
+class ResUsers(models.Model):
+    _inherit = "res.users"
+
+    supervisor_id = fields.Many2one(
+        "res.users",
+        string="Supervisor / Manager"
+    )
+
+
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
@@ -22,6 +31,7 @@ class CrmLead(models.Model):
     deal_value = fields.Float(string="Deal Value")
 
     first_response_date = fields.Datetime(string="First Response Date")
+
     response_time_hours = fields.Float(
         string="Response Time Hours",
         compute="_compute_response_time_hours",
@@ -112,19 +122,13 @@ class CrmLead(models.Model):
     def _compute_lead_age_days(self):
         now = fields.Datetime.now()
         for lead in self:
-            if lead.create_date:
-                lead.lead_age_days = (now - lead.create_date).days
-            else:
-                lead.lead_age_days = 0
+            lead.lead_age_days = (now - lead.create_date).days if lead.create_date else 0
 
     @api.depends("conversion_stage_date")
     def _compute_stage_age_days(self):
         now = fields.Datetime.now()
         for lead in self:
-            if lead.conversion_stage_date:
-                lead.stage_age_days = (now - lead.conversion_stage_date).days
-            else:
-                lead.stage_age_days = 0
+            lead.stage_age_days = (now - lead.conversion_stage_date).days if lead.conversion_stage_date else 0
 
     @api.depends("conversion_stage", "stage_age_days")
     def _compute_is_stuck(self):
@@ -149,3 +153,46 @@ class CrmLead(models.Model):
         if "conversion_stage" in vals:
             vals["conversion_stage_date"] = fields.Datetime.now()
         return super().write(vals)
+
+    def _cron_create_followup_activities(self):
+        now = fields.Datetime.now()
+
+        leads = self.search([
+            ("next_followup_date", "!=", False),
+            ("next_followup_date", "<=", now),
+            ("conversion_stage", "not in", ["won", "lost"]),
+        ])
+
+        activity_type = self.env.ref(
+            "mail.mail_activity_data_call",
+            raise_if_not_found=False
+        )
+
+        for lead in leads:
+            users_to_notify = []
+
+            if lead.user_id:
+                users_to_notify.append(lead.user_id)
+
+            if lead.user_id and lead.user_id.supervisor_id:
+                users_to_notify.append(lead.user_id.supervisor_id)
+
+            for user in users_to_notify:
+                existing_activity = self.env["mail.activity"].search([
+                    ("res_model", "=", "crm.lead"),
+                    ("res_id", "=", lead.id),
+                    ("activity_type_id", "=", activity_type.id if activity_type else False),
+                    ("user_id", "=", user.id),
+                    ("summary", "=", "Follow-up Reminder"),
+                ], limit=1)
+
+                if existing_activity:
+                    continue
+
+                lead.activity_schedule(
+                    activity_type_id=activity_type.id if activity_type else False,
+                    summary="Follow-up Reminder",
+                    note=f"Follow-up is due/overdue for lead: {lead.name}",
+                    user_id=user.id,
+                    date_deadline=fields.Date.today(),
+                )
