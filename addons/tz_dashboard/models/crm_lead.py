@@ -29,7 +29,6 @@ class CrmLead(models.Model):
     )
 
     deal_value = fields.Float(string="Deal Value")
-
     first_response_date = fields.Datetime(string="First Response Date")
 
     response_time_hours = fields.Float(
@@ -148,40 +147,41 @@ class CrmLead(models.Model):
     def action_mark_followup_done(self):
         for lead in self:
             lead.next_followup_date = False
+            self.env["mail.activity"].search([
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+                ("summary", "=", "Follow-up Reminder"),
+            ]).unlink()
 
-    def write(self, vals):
-        if "conversion_stage" in vals:
-            vals["conversion_stage_date"] = fields.Datetime.now()
-        return super().write(vals)
+    def _get_followup_users(self):
+        self.ensure_one()
+        users = []
 
-    def _cron_create_followup_activities(self):
-        now = fields.Datetime.now()
+        if self.user_id:
+            users.append(self.user_id)
 
-        leads = self.search([
-            ("next_followup_date", "!=", False),
-            ("next_followup_date", "<=", now),
-            ("conversion_stage", "not in", ["won", "lost"]),
-        ])
+        if self.user_id and self.user_id.supervisor_id:
+            users.append(self.user_id.supervisor_id)
 
+        return users
+
+    def _create_followup_activities_for_lead(self):
         activity_type = self.env.ref(
             "mail.mail_activity_data_call",
             raise_if_not_found=False
         )
 
-        for lead in leads:
-            users_to_notify = []
+        for lead in self:
+            if not lead.user_id or not lead.next_followup_date:
+                continue
 
-            if lead.user_id:
-                users_to_notify.append(lead.user_id)
+            if lead.conversion_stage in ["won", "lost"]:
+                continue
 
-            if lead.user_id and lead.user_id.supervisor_id:
-                users_to_notify.append(lead.user_id.supervisor_id)
-
-            for user in users_to_notify:
+            for user in lead._get_followup_users():
                 existing_activity = self.env["mail.activity"].search([
                     ("res_model", "=", "crm.lead"),
                     ("res_id", "=", lead.id),
-                    ("activity_type_id", "=", activity_type.id if activity_type else False),
                     ("user_id", "=", user.id),
                     ("summary", "=", "Follow-up Reminder"),
                 ], limit=1)
@@ -192,7 +192,81 @@ class CrmLead(models.Model):
                 lead.activity_schedule(
                     activity_type_id=activity_type.id if activity_type else False,
                     summary="Follow-up Reminder",
-                    note=f"Follow-up is due/overdue for lead: {lead.name}",
+                    note=f"Follow-up reminder for lead: {lead.name}",
                     user_id=user.id,
-                    date_deadline=fields.Date.today(),
+                    date_deadline=lead.next_followup_date.date(),
                 )
+
+    def _create_escalation_activity(self):
+        activity_type = self.env.ref(
+            "mail.mail_activity_data_todo",
+            raise_if_not_found=False
+        )
+
+        for lead in self:
+            if not lead.user_id or not lead.user_id.supervisor_id:
+                continue
+
+            if lead.conversion_stage in ["won", "lost"]:
+                continue
+
+            if lead.sla_status != "breached" and lead.followup_status != "overdue":
+                continue
+
+            supervisor = lead.user_id.supervisor_id
+
+            existing_activity = self.env["mail.activity"].search([
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+                ("user_id", "=", supervisor.id),
+                ("summary", "=", "Escalation Required"),
+            ], limit=1)
+
+            if existing_activity:
+                continue
+
+            lead.activity_schedule(
+                activity_type_id=activity_type.id if activity_type else False,
+                summary="Escalation Required",
+                note=f"Lead requires manager attention: {lead.name}",
+                user_id=supervisor.id,
+                date_deadline=fields.Date.today(),
+            )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        leads = super().create(vals_list)
+        leads._create_followup_activities_for_lead()
+        leads._create_escalation_activity()
+        return leads
+
+    def write(self, vals):
+        if "conversion_stage" in vals:
+            vals["conversion_stage_date"] = fields.Datetime.now()
+
+        result = super().write(vals)
+
+        trigger_fields = [
+            "next_followup_date",
+            "user_id",
+            "conversion_stage",
+            "first_response_date",
+        ]
+
+        if any(field in vals for field in trigger_fields):
+            self._create_followup_activities_for_lead()
+            self._create_escalation_activity()
+
+        return result
+
+    def _cron_create_followup_activities(self):
+        now = fields.Datetime.now()
+
+        leads = self.search([
+            ("next_followup_date", "!=", False),
+            ("next_followup_date", "<=", now),
+            ("conversion_stage", "not in", ["won", "lost"]),
+        ])
+
+        leads._create_followup_activities_for_lead()
+        leads._create_escalation_activity()

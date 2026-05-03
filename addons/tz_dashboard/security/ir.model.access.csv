@@ -4,3 +4,5 @@ access_tz_crm_dashboard_manager,tz.crm.dashboard.manager,model_tz_crm_dashboard,
 access_tz_crm_dashboard_admin,tz.crm.dashboard.admin,model_tz_crm_dashboard,tz_crm_base.group_tz_crm_admin,1,1,1,1
 access_tz_agent_performance_manager,tz.agent.performance.manager,model_tz_agent_performance,tz_crm_base.group_tz_crm_manager,1,1,1,1
 access_tz_agent_performance_admin,tz.agent.performance.admin,model_tz_agent_performance,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_supervisor_dashboard_manager,tz.supervisor.dashboard.manager,model_tz_supervisor_dashboard,tz_crm_base.group_tz_crm_manager,1,1,1,1
+access_tz_supervisor_dashboard_admin,tz.supervisor.dashboard.admin,model_tz_supervisor_dashboard,tz_crm_base.group_tz_crm_admin,1,1,1,1

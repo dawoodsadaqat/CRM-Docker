@@ -93,7 +93,7 @@
     </record>
 
     <record id="action_tz_crm_dashboard" model="ir.actions.act_window">
-        <field name="name">Dashboard</field>
+        <field name="name">Performance Dashboard</field>
         <field name="res_model">tz.crm.dashboard</field>
         <field name="view_mode">tree,form</field>
     </record>
