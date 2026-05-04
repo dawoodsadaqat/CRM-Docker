@@ -1,0 +1,52 @@
+<odoo>
+    <record id="view_sla_breach_queue_tree" model="ir.ui.view">
+        <field name="name">sla.breach.queue.tree</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <tree string="SLA Breach Queue"
+                  decoration-danger="sla_status == 'breached'">
+                <button name="action_assign_to_me"
+                        type="object"
+                        string="Assign to Me"
+                        class="btn-primary"/>
+		<button name="action_assign_to_user"
+        		type="object"
+        		string="Assign"
+        		class="btn-secondary"/>
+
+                <field name="name" string="Lead"/>
+                <field name="user_id" string="Current Agent"/>
+                <field name="create_date"/>
+                <field name="sla_deadline"/>
+                <field name="sla_status"/>
+                <field name="first_response_date"/>
+                <field name="phone"/>
+                <field name="email_from"/>
+                <field name="conversion_stage"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_sla_breach_queue" model="ir.actions.act_window">
+        <field name="name">SLA Breach Queue</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sla_breach_queue_tree"/>
+        <field name="domain">
+    [
+        ('sla_status','=','breached'),
+        ('conversion_stage','not in',['won','lost']),
+        '|',
+        ('sla_rescue_status','=','none'),
+        ('sla_rescue_status','=','breached')
+    ]
+</field>
+    </record>
+
+    <menuitem id="menu_sla_breach_queue"
+              name="SLA Breach Queue"
+              parent="tz_crm_base.menu_tz_crm_root"
+              action="action_sla_breach_queue"
+              groups="tz_crm_base.group_tz_crm_agent,tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
+              sequence="88"/>
+</odoo>

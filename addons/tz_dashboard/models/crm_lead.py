@@ -49,6 +49,17 @@ class CrmLead(models.Model):
         ("breached", "Breached"),
     ], string="SLA Status", compute="_compute_sla_status", store=True)
 
+    sla_rescue_user_id = fields.Many2one("res.users", string="Rescue Agent")
+    sla_rescue_assigned_date = fields.Datetime(string="Rescue Assigned Date")
+    sla_rescue_deadline = fields.Datetime(string="Rescue SLA Deadline")
+
+    sla_rescue_status = fields.Selection([
+        ("none", "None"),
+        ("in_progress", "In Progress"),
+        ("rescued", "Rescued"),
+        ("breached", "Breached Again"),
+    ], string="Rescue SLA Status", default="none")
+
     next_followup_date = fields.Datetime(string="Next Follow-up Date")
 
     followup_status = fields.Selection([
@@ -76,6 +87,14 @@ class CrmLead(models.Model):
         store=True
     )
 
+    def _get_rescue_sla_hours(self):
+        return float(
+            self.env["ir.config_parameter"].sudo().get_param(
+                "tz_dashboard.rescue_sla_hours",
+                default="1"
+            )
+        )
+
     @api.onchange("conversion_stage")
     def _onchange_conversion_stage(self):
         for lead in self:
@@ -92,12 +111,24 @@ class CrmLead(models.Model):
 
     @api.depends("create_date")
     def _compute_sla_deadline(self):
+        sla_hours = float(
+            self.env["ir.config_parameter"].sudo().get_param(
+                "tz_dashboard.sla_hours",
+                default="2"
+            )
+        )
+
         for lead in self:
-            lead.sla_deadline = lead.create_date + timedelta(hours=2) if lead.create_date else False
+            lead.sla_deadline = (
+                lead.create_date + timedelta(hours=sla_hours)
+                if lead.create_date
+                else False
+            )
 
     @api.depends("first_response_date", "sla_deadline")
     def _compute_sla_status(self):
         now = fields.Datetime.now()
+
         for lead in self:
             if lead.first_response_date and lead.sla_deadline:
                 lead.sla_status = "met" if lead.first_response_date <= lead.sla_deadline else "breached"
@@ -109,6 +140,7 @@ class CrmLead(models.Model):
     @api.depends("next_followup_date")
     def _compute_followup_status(self):
         now = fields.Datetime.now()
+
         for lead in self:
             if not lead.next_followup_date:
                 lead.followup_status = "no_followup"
@@ -120,12 +152,14 @@ class CrmLead(models.Model):
     @api.depends("create_date")
     def _compute_lead_age_days(self):
         now = fields.Datetime.now()
+
         for lead in self:
             lead.lead_age_days = (now - lead.create_date).days if lead.create_date else 0
 
     @api.depends("conversion_stage_date")
     def _compute_stage_age_days(self):
         now = fields.Datetime.now()
+
         for lead in self:
             lead.stage_age_days = (now - lead.conversion_stage_date).days if lead.conversion_stage_date else 0
 
@@ -141,29 +175,60 @@ class CrmLead(models.Model):
         for lead in self:
             if not lead.first_response_date:
                 lead.first_response_date = fields.Datetime.now()
+
             lead.conversion_stage = "contacted"
             lead.conversion_stage_date = fields.Datetime.now()
+
+            if lead.sla_rescue_status == "in_progress":
+                lead.sla_rescue_status = "rescued"
 
     def action_mark_followup_done(self):
         for lead in self:
             lead.next_followup_date = False
+
             self.env["mail.activity"].search([
                 ("res_model", "=", "crm.lead"),
                 ("res_id", "=", lead.id),
-                ("summary", "=", "Follow-up Reminder"),
+                ("summary", "in", ["Follow-up Reminder", "Escalation Required"]),
             ]).unlink()
+
+    def action_assign_to_me(self):
+        rescue_hours = self._get_rescue_sla_hours()
+        now = fields.Datetime.now()
+
+        for lead in self:
+            lead.write({
+                "user_id": self.env.user.id,
+                "sla_rescue_user_id": self.env.user.id,
+                "sla_rescue_assigned_date": now,
+                "sla_rescue_deadline": now + timedelta(hours=rescue_hours),
+                "sla_rescue_status": "in_progress",
+            })
+
+            lead.message_post(
+                body=f"Lead assigned to {self.env.user.name}. Rescue SLA started."
+            )
+
+        return True
+
+    def action_assign_to_user(self):
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Assign Lead",
+            "res_model": "crm.lead",
+            "view_mode": "form",
+            "res_id": self.id,
+            "target": "new",
+            "context": {
+                "default_user_id": self.user_id.id,
+            },
+        }
 
     def _get_followup_users(self):
         self.ensure_one()
-        users = []
-
-        if self.user_id:
-            users.append(self.user_id)
-
-        if self.user_id and self.user_id.supervisor_id:
-            users.append(self.user_id.supervisor_id)
-
-        return users
+        return [self.user_id] if self.user_id else []
 
     def _create_followup_activities_for_lead(self):
         activity_type = self.env.ref(
@@ -251,6 +316,7 @@ class CrmLead(models.Model):
             "user_id",
             "conversion_stage",
             "first_response_date",
+            "sla_rescue_status",
         ]
 
         if any(field in vals for field in trigger_fields):
@@ -270,3 +336,23 @@ class CrmLead(models.Model):
 
         leads._create_followup_activities_for_lead()
         leads._create_escalation_activity()
+
+    def _cron_check_rescue_sla(self):
+        now = fields.Datetime.now()
+
+        leads = self.search([
+            ("sla_rescue_status", "=", "in_progress"),
+            ("sla_rescue_deadline", "!=", False),
+            ("sla_rescue_deadline", "<", now),
+            ("conversion_stage", "not in", ["won", "lost"]),
+        ])
+
+        for lead in leads:
+            lead.sla_rescue_status = "breached"
+
+            lead.message_post(
+                body="Rescue SLA breached. Lead returned to SLA Breach Queue."
+            )
+
+        leads._create_escalation_activity()
+  

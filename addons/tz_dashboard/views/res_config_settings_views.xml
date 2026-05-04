@@ -1,0 +1,31 @@
+<odoo>
+    <record id="res_config_settings_view_form_tz_sla" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.tz.sla</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Inject inside Settings UI -->
+            <xpath expr="//form" position="inside">
+                <app string="Techzilla CRM" name="techzilla_crm_settings">
+
+                    <block title="SLA Configuration">
+
+                        <setting string="Lead SLA Hours"
+                                 help="Hours allowed before first response is breached.">
+                            <field name="tz_sla_hours"/>
+                        </setting>
+
+                        <setting string="Rescue SLA Hours"
+                                 help="Hours allowed after reassignment from SLA Breach Queue.">
+                            <field name="tz_rescue_sla_hours"/>
+                        </setting>
+
+                    </block>
+
+                </app>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
