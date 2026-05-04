@@ -20,13 +20,14 @@
 
             <xpath expr="//sheet//group" position="inside">
                 <group string="Conversion Tracking">
-                    <field name="conversion_stage"/>
-                    <field name="conversion_stage_date" readonly="1"/>
-                    <field name="deal_value"/>
-                    <field name="source_id"/>
-                    <field name="medium_id"/>
-                    <field name="campaign_id"/>
-                </group>
+    <field name="conversion_stage"/>
+    <field name="conversion_stage_date" readonly="1"/>
+    <field name="deal_value"/>
+    <field name="lead_category_id"/>
+    <field name="source_id"/>
+    <field name="medium_id"/>
+    <field name="campaign_id"/>
+</group>
 
                 <group string="SLA Tracking">
                     <field name="first_response_date"/>

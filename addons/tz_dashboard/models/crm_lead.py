@@ -15,6 +15,13 @@ class ResUsers(models.Model):
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
+    # NEW FIELD — Lead Category
+    lead_category_id = fields.Many2one(
+        "tz.lead.category",
+        string="Lead Category",
+        tracking=True
+    )
+
     conversion_stage = fields.Selection([
         ("new", "New"),
         ("contacted", "Contacted"),
