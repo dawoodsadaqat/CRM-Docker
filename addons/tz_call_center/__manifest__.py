@@ -17,6 +17,12 @@
         "views/crm_lead_views.xml",
         "views/menu.xml",
     ],
+	
+    "assets": {
+    	"web.assets_backend": [
+        "tz_call_center/static/src/js/dial_tel_action.js",
+    ],
+},
     "installable": True,
     "application": False,
     "license": "LGPL-3",
