@@ -14,3 +14,8 @@ class ResConfigSettings(models.TransientModel):
     	config_parameter="tz_dashboard.rescue_sla_hours",
  	default=1.0
     )
+    tz_sla_warning_hours = fields.Float(
+    	string="SLA Warning Reminder Hours",
+    	config_parameter="tz_dashboard.sla_warning_hours",
+    	default=6.0
+    )

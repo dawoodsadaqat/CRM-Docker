@@ -6,3 +6,6 @@ access_tz_agent_performance_manager,tz.agent.performance.manager,model_tz_agent_
 access_tz_agent_performance_admin,tz.agent.performance.admin,model_tz_agent_performance,tz_crm_base.group_tz_crm_admin,1,1,1,1
 access_tz_supervisor_dashboard_manager,tz.supervisor.dashboard.manager,model_tz_supervisor_dashboard,tz_crm_base.group_tz_crm_manager,1,1,1,1
 access_tz_supervisor_dashboard_admin,tz.supervisor.dashboard.admin,model_tz_supervisor_dashboard,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_history_agent,tz.lead.history.agent,model_tz_lead_history,tz_crm_base.group_tz_crm_agent,1,0,0,0
+access_tz_lead_history_manager,tz.lead.history.manager,model_tz_lead_history,tz_crm_base.group_tz_crm_manager,1,0,0,0
+access_tz_lead_history_admin,tz.lead.history.admin,model_tz_lead_history,tz_crm_base.group_tz_crm_admin,1,1,1,1

@@ -26,6 +26,7 @@
 	"views/sla_breach_queue_views.xml",
 	"views/team_followup_monitor_views.xml",
 	"views/rescue_sla_queue_views.xml",
+	"views/lead_history_views.xml",
 	"views/res_config_settings_views.xml",
     ],
     "installable": True,

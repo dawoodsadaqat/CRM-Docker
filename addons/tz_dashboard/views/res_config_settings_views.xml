@@ -7,7 +7,9 @@
 
             <!-- Inject inside Settings UI -->
             <xpath expr="//form" position="inside">
-                <app string="Techzilla CRM" name="techzilla_crm_settings">
+                <app string="Techzilla CRM"
+     name="techzilla_crm_settings"
+     logo="/tz_dashboard/static/description/icon.png">
 
                     <block title="SLA Configuration">
 
@@ -20,7 +22,10 @@
                                  help="Hours allowed after reassignment from SLA Breach Queue.">
                             <field name="tz_rescue_sla_hours"/>
                         </setting>
-
+			<setting string="SLA Warning Reminder Hours"
+         			help="How many hours before SLA breach the system should remind 				the assigned agent.">
+    			   <field name="tz_sla_warning_hours"/>
+			</setting>
                     </block>
 
                 </app>

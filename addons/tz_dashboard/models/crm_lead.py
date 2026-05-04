@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 from datetime import timedelta
 
 
@@ -95,6 +96,27 @@ class CrmLead(models.Model):
             )
         )
 
+    def _get_sla_warning_hours(self):
+        return float(
+            self.env["ir.config_parameter"].sudo().get_param(
+                "tz_dashboard.sla_warning_hours",
+                default="6"
+            )
+        )
+
+    def _log_lead_history(self, event_type, old_agent=False, new_agent=False, note=False):
+        for lead in self:
+            self.env["tz.lead.history"].sudo().create({
+                "lead_id": lead.id,
+                "event_type": event_type,
+                "old_agent_id": old_agent.id if old_agent else False,
+                "new_agent_id": new_agent.id if new_agent else False,
+                "performed_by_id": self.env.user.id,
+                "sla_deadline": lead.sla_deadline,
+                "rescue_deadline": lead.sla_rescue_deadline,
+                "note": note or "",
+            })
+
     @api.onchange("conversion_stage")
     def _onchange_conversion_stage(self):
         for lead in self:
@@ -179,8 +201,26 @@ class CrmLead(models.Model):
             lead.conversion_stage = "contacted"
             lead.conversion_stage_date = fields.Datetime.now()
 
+            self.env["mail.activity"].search([
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+                ("summary", "=", "SLA Warning Reminder"),
+            ]).unlink()
+
+            lead._log_lead_history(
+                "first_response",
+                new_agent=lead.user_id,
+                note="First response marked"
+            )
+
             if lead.sla_rescue_status == "in_progress":
                 lead.sla_rescue_status = "rescued"
+
+                lead._log_lead_history(
+                    "rescued",
+                    new_agent=lead.user_id,
+                    note="Lead rescued within rescue SLA"
+                )
 
     def action_mark_followup_done(self):
         for lead in self:
@@ -192,11 +232,25 @@ class CrmLead(models.Model):
                 ("summary", "in", ["Follow-up Reminder", "Escalation Required"]),
             ]).unlink()
 
+            lead._log_lead_history(
+                "followup_done",
+                new_agent=lead.user_id,
+                note="Follow-up marked done"
+            )
+
     def action_assign_to_me(self):
         rescue_hours = self._get_rescue_sla_hours()
         now = fields.Datetime.now()
 
         for lead in self:
+            old_agent = lead.user_id
+
+            if old_agent and old_agent.id == self.env.user.id:
+                raise UserError(
+                    "You cannot assign this breached SLA lead to yourself because you are already the current agent. "
+                    "Another agent or supervisor must take ownership."
+                )
+
             lead.write({
                 "user_id": self.env.user.id,
                 "sla_rescue_user_id": self.env.user.id,
@@ -204,6 +258,21 @@ class CrmLead(models.Model):
                 "sla_rescue_deadline": now + timedelta(hours=rescue_hours),
                 "sla_rescue_status": "in_progress",
             })
+
+            if old_agent != self.env.user:
+                lead._log_lead_history(
+                    "assigned_from_queue",
+                    old_agent=old_agent,
+                    new_agent=self.env.user,
+                    note="Lead picked from SLA Breach Queue"
+                )
+
+            lead._log_lead_history(
+                "rescue_started",
+                old_agent=old_agent,
+                new_agent=self.env.user,
+                note="Rescue SLA started"
+            )
 
             lead.message_post(
                 body=f"Lead assigned to {self.env.user.name}. Rescue SLA started."
@@ -262,6 +331,12 @@ class CrmLead(models.Model):
                     date_deadline=lead.next_followup_date.date(),
                 )
 
+                lead._log_lead_history(
+                    "followup_created",
+                    new_agent=user,
+                    note="Follow-up reminder created"
+                )
+
     def _create_escalation_activity(self):
         activity_type = self.env.ref(
             "mail.mail_activity_data_todo",
@@ -273,6 +348,9 @@ class CrmLead(models.Model):
                 continue
 
             if lead.conversion_stage in ["won", "lost"]:
+                continue
+
+            if lead.sla_rescue_status == "in_progress":
                 continue
 
             if lead.sla_status != "breached" and lead.followup_status != "overdue":
@@ -298,18 +376,100 @@ class CrmLead(models.Model):
                 date_deadline=fields.Date.today(),
             )
 
+            lead._log_lead_history(
+                "escalation_created",
+                new_agent=supervisor,
+                note="Escalation activity created for supervisor"
+            )
+
+    def _create_sla_warning_reminder(self):
+        activity_type = self.env.ref(
+            "mail.mail_activity_data_todo",
+            raise_if_not_found=False
+        )
+
+        for lead in self:
+            if not lead.user_id:
+                continue
+
+            existing = self.env["mail.activity"].search([
+                ("res_model", "=", "crm.lead"),
+                ("res_id", "=", lead.id),
+                ("user_id", "=", lead.user_id.id),
+                ("summary", "=", "SLA Warning Reminder"),
+            ], limit=1)
+
+            if existing:
+                continue
+
+            lead.activity_schedule(
+                activity_type_id=activity_type.id if activity_type else False,
+                summary="SLA Warning Reminder",
+                note=f"SLA will breach soon for lead: {lead.name}",
+                user_id=lead.user_id.id,
+                date_deadline=fields.Date.today(),
+            )
+
+            lead._log_lead_history(
+                "sla_warning_created",
+                new_agent=lead.user_id,
+                note="SLA warning reminder created"
+            )
+
     @api.model_create_multi
     def create(self, vals_list):
         leads = super().create(vals_list)
+
+        for lead in leads:
+            lead._log_lead_history(
+                "lead_created",
+                new_agent=lead.user_id,
+                note="Lead created"
+            )
+
         leads._create_followup_activities_for_lead()
         leads._create_escalation_activity()
         return leads
 
     def write(self, vals):
+        old_values = {}
+
+        for lead in self:
+            old_values[lead.id] = {
+                "user_id": lead.user_id,
+                "conversion_stage": lead.conversion_stage,
+            }
+
         if "conversion_stage" in vals:
             vals["conversion_stage_date"] = fields.Datetime.now()
 
         result = super().write(vals)
+
+        for lead in self:
+            old_agent = old_values[lead.id]["user_id"]
+            old_stage = old_values[lead.id]["conversion_stage"]
+
+            if "user_id" in vals and old_agent != lead.user_id:
+                lead._log_lead_history(
+                    "agent_assigned",
+                    old_agent=old_agent,
+                    new_agent=lead.user_id,
+                    note=f"Agent changed from {old_agent.name or 'None'} to {lead.user_id.name or 'None'}"
+                )
+
+            if "conversion_stage" in vals and old_stage != lead.conversion_stage:
+                event_type = "stage_changed"
+
+                if lead.conversion_stage == "won":
+                    event_type = "won"
+                elif lead.conversion_stage == "lost":
+                    event_type = "lost"
+
+                lead._log_lead_history(
+                    event_type,
+                    new_agent=lead.user_id,
+                    note=f"Stage changed from {old_stage or 'None'} to {lead.conversion_stage}"
+                )
 
         trigger_fields = [
             "next_followup_date",
@@ -350,9 +510,34 @@ class CrmLead(models.Model):
         for lead in leads:
             lead.sla_rescue_status = "breached"
 
+            lead._log_lead_history(
+                "rescue_breached",
+                new_agent=lead.user_id,
+                note="Rescue SLA breached"
+            )
+
             lead.message_post(
                 body="Rescue SLA breached. Lead returned to SLA Breach Queue."
             )
 
         leads._create_escalation_activity()
-  
+
+    def _cron_create_sla_warning_reminders(self):
+        now = fields.Datetime.now()
+        warning_hours = self._get_sla_warning_hours()
+
+        leads = self.search([
+            ("user_id", "!=", False),
+            ("first_response_date", "=", False),
+            ("sla_deadline", "!=", False),
+            ("sla_status", "=", "pending"),
+            ("conversion_stage", "not in", ["won", "lost"]),
+        ])
+
+        for lead in leads:
+            warning_time = lead.sla_deadline - timedelta(hours=warning_hours)
+
+            if not (warning_time <= now < lead.sla_deadline):
+                continue
+
+            lead._create_sla_warning_reminder()
