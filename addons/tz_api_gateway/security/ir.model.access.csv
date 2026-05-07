@@ -1,5 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_tz_api_config_admin,tz.api.config.admin,model_tz_api_config,tz_crm_base.group_tz_crm_admin,1,1,1,1
-access_tz_api_config_manager,tz.api.config.manager,model_tz_api_config,tz_crm_base.group_tz_crm_manager,1,1,1,0
-access_tz_api_log_manager,tz.api.log.manager,model_tz_api_log,tz_crm_base.group_tz_crm_manager,1,0,0,0
-access_tz_api_log_admin,tz.api.log.admin,model_tz_api_log,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_config_admin,tz.lead.config.admin,model_tz_lead_config,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_integration_admin,tz.lead.integration.admin,model_tz_lead_integration,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_routing_rule_admin,tz.lead.routing.rule.admin,model_tz_lead_routing_rule,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_routing_rule_manager,tz.lead.routing.rule.manager,model_tz_lead_routing_rule,tz_crm_base.group_tz_crm_manager,1,1,1,0
+access_tz_property_type_admin,tz.property.type.admin,model_tz_property_type,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_temperature_admin,tz.lead.temperature.admin,model_tz_lead_temperature,tz_crm_base.group_tz_crm_admin,1,1,1,1

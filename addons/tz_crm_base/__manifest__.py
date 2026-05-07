@@ -8,6 +8,8 @@
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
+	"views/crm_lead_source_views.xml",
+	"views/res_users_role_filter_views.xml",
         "views/menu.xml",
     ],
     "installable": True,

@@ -1,0 +1,26 @@
+<odoo>
+
+    <record id="view_res_users_search_role_filters" model="ir.ui.view">
+        <field name="name">res.users.search.role.filters</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_search"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//search" position="inside">
+
+                <separator/>
+
+                <filter string="CRM Managers"
+                        name="filter_crm_managers"
+                        domain="[('groups_id', 'in', [%(tz_crm_base.group_tz_crm_manager)d])]"/>
+
+                <filter string="CRM Agents"
+                        name="filter_crm_agents"
+                        domain="[('groups_id', 'in', [%(tz_crm_base.group_tz_crm_agent)d])]"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

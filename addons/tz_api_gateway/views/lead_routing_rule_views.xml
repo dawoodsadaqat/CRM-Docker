@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- TREE VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_tz_lead_routing_rule_tree" model="ir.ui.view">
+        <field name="name">tz.lead.routing.rule.tree</field>
+        <field name="model">tz.lead.routing.rule</field>
+        <field name="arch" type="xml">
+
+            <tree>
+                <field name="priority"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="assign_supervisor_id"/>
+                <field name="assign_agent_id"/>
+                <field name="active"/>
+            </tree>
+
+        </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_tz_lead_routing_rule_form" model="ir.ui.view">
+        <field name="name">tz.lead.routing.rule.form</field>
+        <field name="model">tz.lead.routing.rule</field>
+        <field name="arch" type="xml">
+
+            <form string="Lead Routing Rule">
+
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="priority"/>
+                            <field name="active"/>
+                        </group>
+
+                        <group>
+                            <field name="assign_supervisor_id"/>
+                            <field name="assign_agent_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <page string="Routing Conditions">
+
+                            <group>
+
+                                <field
+                                    name="allowed_source_ids"
+                                    widget="many2many_tags"
+                                />
+
+                                <field
+                                    name="property_type_ids"
+                                    widget="many2many_tags"
+                                />
+
+                                <field
+                                    name="lead_temperature_ids"
+                                    widget="many2many_tags"
+                                />
+
+                            </group>
+
+                            <group>
+                                <field name="preferred_location"/>
+                                <field name="budget_min"/>
+                                <field name="budget_max"/>
+                            </group>
+
+                        </page>
+
+                        <page string="Notes">
+
+                            <field name="notes"/>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- ACTION -->
+    <!-- ===================================================== -->
+
+    <record id="action_tz_lead_routing_rule" model="ir.actions.act_window">
+        <field name="name">Routing Rules</field>
+        <field name="res_model">tz.lead.routing.rule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- MENU -->
+    <!-- ===================================================== -->
+
+   <menuitem
+    id="menu_tz_lead_routing_rule"
+    name="Routing Rules"
+    parent="tz_crm_base.menu_tz_crm_config"
+    action="action_tz_lead_routing_rule"
+    sequence="50"
+/>
+
+</odoo>

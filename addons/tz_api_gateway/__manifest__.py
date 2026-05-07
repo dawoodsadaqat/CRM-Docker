@@ -8,13 +8,16 @@
         "crm",
         "contacts",
         "tz_crm_base",
-        "tz_realestate_leads"
+        "tz_realestate_leads",
+        'sales_team'
     ],
     "data": [
         "security/ir.model.access.csv",
-        "views/api_config_views.xml",
-        "views/menu.xml",
-	"views/api_log_views.xml",
+        # "views/menu.xml",
+        "views/lead_source_config_views.xml",
+	    "views/api_log_views.xml",
+        "data/master_data.xml",
+        "views/lead_routing_rule_views.xml",
     ],
     "installable": True,
     "application": False,
