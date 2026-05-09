@@ -37,28 +37,63 @@ class TzLeadHistory(models.Model):
         store=True,
         string="Assigned Agent"
     )
-
+    visible_agent_ids = fields.Many2many(
+        "res.users",
+        "tz_lead_history_visible_agent_rel",
+        "history_id",
+        "user_id",
+        string="Visible Agents" 
+    )
     # =====================================================
-    # EVENT TYPES
+    # HISTORY ACTION TYPES
     # =====================================================
 
     event_type = fields.Selection([
         ("lead_created", "Lead Created"),
+        ("lead_updated", "Lead Updated"),
+
         ("agent_assigned", "Agent Assigned"),
+        ("supervisor_assigned", "Supervisor Assigned"),
+        ("team_changed", "Team Changed"),
+
         ("stage_changed", "Stage Changed"),
+        ("conversion_stage_changed", "Conversion Stage Changed"),
+
         ("sla_breached", "SLA Breached"),
         ("assigned_from_queue", "Assigned From SLA Queue"),
         ("rescue_started", "Rescue Started"),
         ("rescue_breached", "Rescue SLA Breached"),
-        ("first_response", "First Response Marked"),
         ("rescued", "Rescued"),
+
+        ("first_response", "First Response Marked"),
         ("followup_created", "Follow-up Reminder Created"),
         ("followup_done", "Follow-up Done"),
         ("escalation_created", "Escalation Created"),
+
+        ("probability_changed", "Probability Changed"),
+        ("expected_revenue_changed", "Expected Revenue Changed"),
+
         ("won", "Won"),
         ("lost", "Lost"),
+
         ("sla_warning_created", "SLA Warning Reminder Created"),
     ], string="Event Type", required=True)
+
+    # =====================================================
+    # FIELD TRACKING
+    # =====================================================
+
+    field_name = fields.Char(
+        string="Field Name"
+    )
+
+    old_value = fields.Text(
+        string="Old Value"
+    )
+
+    new_value = fields.Text(
+        string="New Value"
+    )
 
     # =====================================================
     # USER TRACKING

@@ -31,14 +31,19 @@
     <!-- AGENT -->
 
     <record id="rule_tz_lead_history_agent" model="ir.rule">
-        <field name="name">Lead History Agent</field>
-        <field name="model_id" ref="model_tz_lead_history"/>
-        <field name="groups"
-               eval="[(4, ref('tz_crm_base.group_tz_crm_agent'))]"/>
-
-        <field name="domain_force">
-            [('agent_id', '=', user.id)]
-        </field>
-    </record>
+    <field name="name">Lead History Agent</field>
+    <field name="model_id" ref="model_tz_lead_history"/>
+    <field name="groups" eval="[(4, ref('tz_crm_base.group_tz_crm_agent'))]"/>
+    <field name="domain_force">
+        [
+            '|', '|', '|', '|',
+                ('visible_agent_ids', 'in', [user.id]),
+                ('new_agent_id', '=', user.id),
+                ('old_agent_id', '=', user.id),
+                ('performed_by_id', '=', user.id),
+                ('lead_id.agent_owner_id', '=', user.id)
+        ]
+    </field>
+</record>
 
 </odoo>

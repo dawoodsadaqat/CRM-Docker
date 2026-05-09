@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="view_users_form_tz_location" model="ir.ui.view">
+        <field name="name">res.users.form.tz.location</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/notebook" position="inside">
+
+                <page string="Live Tracking">
+
+                    <group>
+
+                        <field name="tz_location_tracking_enabled"/>
+
+                        <field
+                            name="tz_location_token"
+                            readonly="1"
+                        />
+
+                        <button
+                            name="action_generate_location_token"
+                            type="object"
+                            string="Generate Token"
+                            class="btn-primary"
+                        />
+
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tz_user_location_admin,tz.user.location.admin,model_tz_user_location,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_user_location_manager,tz.user.location.manager,model_tz_user_location,tz_crm_base.group_tz_crm_manager,1,0,0,0
+access_tz_live_tracking_config_admin,tz.live.tracking.config.admin,model_tz_live_tracking_config,tz_crm_base.group_tz_crm_admin,1,1,1,1

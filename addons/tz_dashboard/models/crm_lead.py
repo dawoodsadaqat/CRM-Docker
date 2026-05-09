@@ -15,7 +15,25 @@ class ResUsers(models.Model):
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
-    # NEW FIELD — Lead Category
+    TRACKED_FIELDS = {
+        "name": ("lead_updated", "Lead Title"),
+        "phone": ("lead_updated", "Phone"),
+        "email_from": ("lead_updated", "Email"),
+        "user_id": ("agent_assigned", "Salesperson / Supervisor"),
+        "agent_owner_id": ("agent_assigned", "Assigned Agent"),
+        "team_id": ("team_changed", "Sales Team"),
+        "stage_id": ("stage_changed", "Pipeline Stage"),
+        "conversion_stage": ("stage_changed", "Conversion Stage"),
+        "probability": ("probability_changed", "Probability"),
+        "expected_revenue": ("expected_revenue_changed", "Expected Revenue"),
+        "deal_value": ("expected_revenue_changed", "Deal Value"),
+        "type": ("lead_updated", "Lead Type"),
+        "lead_category_id": ("lead_updated", "Lead Category"),
+        "next_followup_date": ("followup_created", "Next Follow-up Date"),
+        "first_response_date": ("first_response", "First Response Date"),
+        "sla_rescue_status": ("rescue_started", "Rescue SLA Status"),
+    }
+
     lead_category_id = fields.Many2one(
         "tz.lead.category",
         string="Lead Category",
@@ -95,6 +113,15 @@ class CrmLead(models.Model):
         store=True
     )
 
+    def _get_display_value(self, value):
+        if not value:
+            return False
+
+        if hasattr(value, "display_name"):
+            return value.display_name
+
+        return value
+
     def _get_rescue_sla_hours(self):
         return float(
             self.env["ir.config_parameter"].sudo().get_param(
@@ -111,17 +138,46 @@ class CrmLead(models.Model):
             )
         )
 
-    def _log_lead_history(self, event_type, old_agent=False, new_agent=False, note=False):
+    def _log_lead_history(
+        self,
+        event_type,
+        old_agent=False,
+        new_agent=False,
+        note=False,
+        field_name=False,
+        old_value=False,
+        new_value=False,
+    ):
         for lead in self:
+            visible_agents = self.env["res.users"]
+
+            if lead.agent_owner_id:
+                visible_agents |= lead.agent_owner_id
+
+            if new_agent:
+                visible_agents |= new_agent
+
+            # Old agent should see only the actual reassignment/removal row.
+            # Do NOT add old_agent for rescue_started / assigned_from_queue / later events.
+            if old_agent and event_type == "agent_assigned":
+                visible_agents |= old_agent
+
+            if self.env.user.has_group("tz_crm_base.group_tz_crm_agent"):
+                visible_agents |= self.env.user
+
             self.env["tz.lead.history"].sudo().create({
                 "lead_id": lead.id,
                 "event_type": event_type,
                 "old_agent_id": old_agent.id if old_agent else False,
                 "new_agent_id": new_agent.id if new_agent else False,
                 "performed_by_id": self.env.user.id,
+                "field_name": field_name or False,
+                "old_value": str(self._get_display_value(old_value)) if old_value else False,
+                "new_value": str(self._get_display_value(new_value)) if new_value else False,
                 "sla_deadline": lead.sla_deadline,
                 "rescue_deadline": lead.sla_rescue_deadline,
-                "note": note or "",
+                "note": note or False,
+                "visible_agent_ids": [(6, 0, visible_agents.ids)],
             })
 
     @api.onchange("conversion_stage")
@@ -229,6 +285,8 @@ class CrmLead(models.Model):
                     note="Lead rescued within rescue SLA"
                 )
 
+        return True
+
     def action_mark_followup_done(self):
         for lead in self:
             lead.next_followup_date = False
@@ -244,6 +302,8 @@ class CrmLead(models.Model):
                 new_agent=lead.user_id,
                 note="Follow-up marked done"
             )
+
+        return True
 
     def action_assign_to_me(self):
         rescue_hours = self._get_rescue_sla_hours()
@@ -276,7 +336,6 @@ class CrmLead(models.Model):
 
             lead._log_lead_history(
                 "rescue_started",
-                old_agent=old_agent,
                 new_agent=self.env.user,
                 note="Rescue SLA started"
             )
@@ -301,6 +360,36 @@ class CrmLead(models.Model):
                 "default_user_id": self.user_id.id,
             },
         }
+
+    def action_set_won(self):
+        result = super().action_set_won()
+
+        for lead in self:
+            lead.conversion_stage = "won"
+            lead.conversion_stage_date = fields.Datetime.now()
+
+            lead._log_lead_history(
+                "won",
+                new_agent=lead.user_id,
+                note="Opportunity marked as won"
+            )
+
+        return result
+
+    def action_set_lost(self, **additional_values):
+        result = super().action_set_lost(**additional_values)
+
+        for lead in self:
+            lead.conversion_stage = "lost"
+            lead.conversion_stage_date = fields.Datetime.now()
+
+            lead._log_lead_history(
+                "lost",
+                new_agent=lead.user_id,
+                note="Opportunity marked as lost"
+            )
+
+        return result
 
     def _get_followup_users(self):
         self.ensure_one()
@@ -436,16 +525,22 @@ class CrmLead(models.Model):
 
         leads._create_followup_activities_for_lead()
         leads._create_escalation_activity()
+
         return leads
 
     def write(self, vals):
-        old_values = {}
+        tracking_data = {}
 
         for lead in self:
-            old_values[lead.id] = {
-                "user_id": lead.user_id,
-                "conversion_stage": lead.conversion_stage,
-            }
+            tracking_data[lead.id] = {}
+
+            for field_name, tracking_config in self.TRACKED_FIELDS.items():
+                if field_name in vals and field_name in lead._fields:
+                    tracking_data[lead.id][field_name] = {
+                        "old": lead[field_name],
+                        "event_type": tracking_config[0],
+                        "label": tracking_config[1],
+                    }
 
         if "conversion_stage" in vals:
             vals["conversion_stage_date"] = fields.Datetime.now()
@@ -453,30 +548,20 @@ class CrmLead(models.Model):
         result = super().write(vals)
 
         for lead in self:
-            old_agent = old_values[lead.id]["user_id"]
-            old_stage = old_values[lead.id]["conversion_stage"]
+            for field_name, data in tracking_data.get(lead.id, {}).items():
+                old_value = data["old"]
+                new_value = lead[field_name]
 
-            if "user_id" in vals and old_agent != lead.user_id:
-                lead._log_lead_history(
-                    "agent_assigned",
-                    old_agent=old_agent,
-                    new_agent=lead.user_id,
-                    note=f"Agent changed from {old_agent.name or 'None'} to {lead.user_id.name or 'None'}"
-                )
-
-            if "conversion_stage" in vals and old_stage != lead.conversion_stage:
-                event_type = "stage_changed"
-
-                if lead.conversion_stage == "won":
-                    event_type = "won"
-                elif lead.conversion_stage == "lost":
-                    event_type = "lost"
-
-                lead._log_lead_history(
-                    event_type,
-                    new_agent=lead.user_id,
-                    note=f"Stage changed from {old_stage or 'None'} to {lead.conversion_stage}"
-                )
+                if str(lead._get_display_value(old_value)) != str(lead._get_display_value(new_value)):
+                    lead._log_lead_history(
+                        data["event_type"],
+                        old_agent=old_value if field_name in ["user_id", "agent_owner_id"] else False,
+                        new_agent=new_value if field_name in ["user_id", "agent_owner_id"] else False,
+                        field_name=field_name,
+                        old_value=old_value,
+                        new_value=new_value,
+                        note=f"{data['label']} changed"
+                    )
 
         trigger_fields = [
             "next_followup_date",
@@ -519,7 +604,7 @@ class CrmLead(models.Model):
 
             lead._log_lead_history(
                 "rescue_breached",
-                new_agent=lead.user_id,
+                new_agent=lead.sla_rescue_user_id,
                 note="Rescue SLA breached"
             )
 
