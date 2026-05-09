@@ -398,6 +398,7 @@ class TzApiGateway(http.Controller):
             "email_from": email,
             "type": "lead",
             "user_id": assigned_user_id,
+            "team_id": matched_rule.assign_team_id.id if matched_rule and matched_rule.assign_team_id else False,
             "source_channel": source_channel,
             "property_type": property_type,
             "preferred_location": payload.get("preferred_location"),

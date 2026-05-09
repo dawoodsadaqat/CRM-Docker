@@ -13,6 +13,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "security/lead_history_rules.xml",
         "views/dashboard_views.xml",
  	"views/crm_lead_conversion_views.xml",
 	"views/agent_performance_views.xml",

@@ -15,6 +15,7 @@
                 <field name="name"/>
                 <field name="company_id"/>
                 <field name="assign_supervisor_id"/>
+                <field name="assign_team_id"/>
                 <field name="assign_agent_id"/>
                 <field name="active"/>
             </tree>
@@ -43,10 +44,15 @@
                             <field name="active"/>
                         </group>
 
-                        <group>
-                            <field name="assign_supervisor_id"/>
-                            <field name="assign_agent_id"/>
-                        </group>
+                       <group>
+    <field name="assign_team_id"/>
+
+    <field name="assign_supervisor_id"
+           domain="[('groups_id', 'in', [%(tz_crm_base.group_tz_crm_manager)d])]"/>
+
+    <field name="assign_agent_id"
+           domain="[('groups_id', 'in', [%(tz_crm_base.group_tz_crm_agent)d]), ('groups_id', 'not in', [%(tz_crm_base.group_tz_crm_manager)d])]"/>
+</group>
                     </group>
 
                     <notebook>

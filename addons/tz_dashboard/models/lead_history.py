@@ -6,7 +6,41 @@ class TzLeadHistory(models.Model):
     _description = "Lead History"
     _order = "event_time desc"
 
-    lead_id = fields.Many2one("crm.lead", string="Lead", required=True, ondelete="cascade")
+    # =====================================================
+    # LEAD RELATIONS
+    # =====================================================
+
+    lead_id = fields.Many2one(
+        "crm.lead",
+        string="Lead",
+        required=True,
+        ondelete="cascade"
+    )
+
+    team_id = fields.Many2one(
+        "crm.team",
+        related="lead_id.team_id",
+        store=True,
+        string="Team"
+    )
+
+    supervisor_id = fields.Many2one(
+        "res.users",
+        related="lead_id.user_id",
+        store=True,
+        string="Supervisor"
+    )
+
+    agent_id = fields.Many2one(
+        "res.users",
+        related="lead_id.agent_owner_id",
+        store=True,
+        string="Assigned Agent"
+    )
+
+    # =====================================================
+    # EVENT TYPES
+    # =====================================================
 
     event_type = fields.Selection([
         ("lead_created", "Lead Created"),
@@ -23,16 +57,32 @@ class TzLeadHistory(models.Model):
         ("escalation_created", "Escalation Created"),
         ("won", "Won"),
         ("lost", "Lost"),
-	("sla_warning_created", "SLA Warning Reminder Created"),
+        ("sla_warning_created", "SLA Warning Reminder Created"),
     ], string="Event Type", required=True)
 
-    old_agent_id = fields.Many2one("res.users", string="Old Agent")
-    new_agent_id = fields.Many2one("res.users", string="New Agent")
+    # =====================================================
+    # USER TRACKING
+    # =====================================================
+
+    old_agent_id = fields.Many2one(
+        "res.users",
+        string="Old Agent"
+    )
+
+    new_agent_id = fields.Many2one(
+        "res.users",
+        string="New Agent"
+    )
+
     performed_by_id = fields.Many2one(
         "res.users",
         string="Performed By",
         default=lambda self: self.env.user
     )
+
+    # =====================================================
+    # TIMELINES
+    # =====================================================
 
     event_time = fields.Datetime(
         string="Event Time",
@@ -40,6 +90,18 @@ class TzLeadHistory(models.Model):
         required=True
     )
 
-    sla_deadline = fields.Datetime(string="SLA Deadline")
-    rescue_deadline = fields.Datetime(string="Rescue Deadline")
-    note = fields.Text(string="Notes")
+    sla_deadline = fields.Datetime(
+        string="SLA Deadline"
+    )
+
+    rescue_deadline = fields.Datetime(
+        string="Rescue Deadline"
+    )
+
+    # =====================================================
+    # NOTES
+    # =====================================================
+
+    note = fields.Text(
+        string="Notes"
+    )

@@ -67,7 +67,11 @@ class TzLeadRoutingRule(models.Model):
         "res.users",
         string="Assign Supervisor"
     )
-
+    assign_team_id = fields.Many2one(
+        "crm.team",
+        string="Assign Team",
+        required=True
+    )
     assign_agent_id = fields.Many2one(
         "res.users",
         string="Assign Agent"
