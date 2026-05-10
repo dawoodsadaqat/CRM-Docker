@@ -1,4 +1,5 @@
 <odoo>
+
     <record id="view_tz_commission_tree" model="ir.ui.view">
         <field name="name">tz.commission.tree</field>
         <field name="model">tz.commission</field>
@@ -8,14 +9,14 @@
                 <field name="lead_id"/>
                 <field name="customer_id"/>
                 <field name="agent_id"/>
-                <field name="property_unit_id"/>
+                <field name="manager_id"/>
                 <field name="sale_value"/>
-                <field name="commission_percent"/>
-                <field name="commission_amount"/>
-                <field name="approval_status"/>
+                <field name="agency_commission_amount"/>
+                <field name="agent_commission_amount"/>
+                <field name="manager_override_amount"/>
+                <field name="net_company_commission"/>
                 <field name="payment_status"/>
-                <field name="paid_amount"/>
-                <field name="remaining_amount"/>
+                <field name="approval_status"/>
             </tree>
         </field>
     </record>
@@ -25,64 +26,123 @@
         <field name="model">tz.commission</field>
         <field name="arch" type="xml">
             <form string="Commission">
+
                 <header>
-                    <button name="action_submit"
-                            string="Submit"
-                            type="object"
-                            class="btn-primary"
-                            invisible="approval_status != 'draft'"/>
+                    <button name="action_submit" string="Submit" type="object" class="btn-primary" invisible="approval_status != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary" invisible="approval_status != 'submitted'" groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"/>
+                    <button name="action_reject" string="Reject" type="object" invisible="approval_status != 'submitted'" groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="approval_status == 'draft'" groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"/>
+                    <button name="action_mark_agency_payment_received" string="Mark Agency Payment Received" type="object" invisible="agency_payment_received == True" groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"/>
+                    <button name="action_close_commission" string="Close" type="object" invisible="approval_status != 'approved'" groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"/>
 
-                    <button name="action_approve"
-                            string="Approve"
-                            type="object"
-                            class="btn-primary"
-                            invisible="approval_status != 'submitted'"/>
-
-                    <button name="action_reject"
-                            string="Reject"
-                            type="object"
-                            invisible="approval_status != 'submitted'"/>
-
-                    <button name="action_reset_to_draft"
-                            string="Reset to Draft"
-                            type="object"
-                            invisible="approval_status == 'draft'"/>
-
-                    <field name="approval_status"
-                           widget="statusbar"
-                           statusbar_visible="draft,submitted,approved,rejected"/>
+                    <field name="approval_status" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected,closed"/>
                 </header>
 
                 <sheet>
+
                     <group>
-                        <group>
+                        <group string="Deal Information">
                             <field name="name" readonly="1"/>
                             <field name="lead_id"/>
                             <field name="customer_id"/>
                             <field name="agent_id"/>
+                            <field name="manager_id"/>
                             <field name="property_unit_id"/>
+                            <field name="company_id"/>
+                            <field name="currency_id" invisible="1"/>
                         </group>
 
-                        <group>
+                        <group string="Deal Value">
                             <field name="sale_value"/>
-                            <field name="commission_percent"/>
-                            <field name="commission_amount" readonly="1"/>
-                            <field name="payment_status"/>
-                            <field name="paid_amount"/>
-                            <field name="remaining_amount" readonly="1"/>
+                            <field name="agency_commission_percent"/>
+                            <field name="agency_commission_amount" readonly="1"/>
+                            <field name="vat_applicable"/>
+                            <field name="vat_percent" invisible="vat_applicable == False"/>
+                            <field name="vat_amount" readonly="1"/>
+                            <field name="total_receivable_amount" readonly="1"/>
                         </group>
                     </group>
 
                     <notebook>
-                        <page string="Approval Note">
-                            <field name="approval_note"/>
+
+                        <page string="Commission Split">
+                            <group>
+                                <group string="Brokerage Split">
+                                    <field name="agency_share_percent"/>
+                                    <field name="agency_share_amount" readonly="1"/>
+                                    <field name="external_broker_percent"/>
+                                    <field name="external_broker_amount" readonly="1"/>
+                                </group>
+
+                                <group string="Internal Payout">
+                                    <field name="agent_commission_percent"/>
+                                    <field name="agent_commission_amount" readonly="1"/>
+                                    <field name="manager_override_percent"/>
+                                    <field name="manager_override_amount" readonly="1"/>
+                                    <field name="developer_payout_percent"/>
+                                    <field name="developer_payout_amount" readonly="1"/>
+                                </group>
+                            </group>
+
+                            <group string="Final Summary">
+                                <field name="total_payout_amount" readonly="1"/>
+                                <field name="net_company_commission" readonly="1"/>
+                                <field name="clawback_total" readonly="1"/>
+                                <field name="final_payable_amount" readonly="1"/>
+                            </group>
                         </page>
 
-                        <page string="Payment Note">
-                            <field name="payment_note"/>
+                        <page string="Payment Milestones">
+                            <field name="milestone_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="due_date"/>
+                                    <field name="amount"/>
+                                    <field name="status"/>
+                                    <field name="paid_date"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+
+                            <group string="Payment Summary">
+                                <field name="payment_status" readonly="1"/>
+                                <field name="paid_amount" readonly="1"/>
+                                <field name="remaining_amount" readonly="1"/>
+                                <field name="agency_payment_received"/>
+                            </group>
                         </page>
+
+                        <page string="Clawbacks">
+                            <field name="clawback_ids">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="reason"/>
+                                    <field name="amount"/>
+                                    <field name="status"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Accounting">
+                            <group>
+                                <field name="customer_invoice_ref"/>
+                                <field name="accounting_entry_ref"/>
+                                <field name="accounting_note"/>
+                            </group>
+                        </page>
+
+                        <page string="Approval Notes">
+                            <group>
+                                <field name="approval_note"/>
+                                <field name="payment_note"/>
+                            </group>
+                        </page>
+
                     </notebook>
+
                 </sheet>
+
             </form>
         </field>
     </record>
@@ -96,19 +156,27 @@
                 <field name="lead_id"/>
                 <field name="customer_id"/>
                 <field name="agent_id"/>
+                <field name="manager_id"/>
                 <field name="property_unit_id"/>
 
                 <filter string="Draft" name="draft" domain="[('approval_status','=','draft')]"/>
                 <filter string="Submitted" name="submitted" domain="[('approval_status','=','submitted')]"/>
                 <filter string="Approved" name="approved" domain="[('approval_status','=','approved')]"/>
                 <filter string="Rejected" name="rejected" domain="[('approval_status','=','rejected')]"/>
+                <filter string="Closed" name="closed" domain="[('approval_status','=','closed')]"/>
+
                 <filter string="Unpaid" name="unpaid" domain="[('payment_status','=','unpaid')]"/>
+                <filter string="Partially Paid" name="partially_paid" domain="[('payment_status','=','partially_paid')]"/>
                 <filter string="Paid" name="paid" domain="[('payment_status','=','paid')]"/>
+
+                <filter string="Agency Payment Received" name="agency_received" domain="[('agency_payment_received','=',True)]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Agent" name="group_agent" context="{'group_by':'agent_id'}"/>
+                    <filter string="Manager" name="group_manager" context="{'group_by':'manager_id'}"/>
                     <filter string="Approval Status" name="group_approval_status" context="{'group_by':'approval_status'}"/>
                     <filter string="Payment Status" name="group_payment_status" context="{'group_by':'payment_status'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
                 </group>
             </search>
         </field>
@@ -120,4 +188,5 @@
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_tz_commission_search"/>
     </record>
+
 </odoo>

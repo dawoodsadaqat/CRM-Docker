@@ -1,7 +1,7 @@
 {
     "name": "TZ Commission",
-    "version": "1.0.0",
-    "summary": "Agent commission tracking for real estate deals",
+    "version": "17.0.1.0.0",
+    "summary": "Advanced commission management for real estate CRM deals",
     "category": "Sales/CRM",
     "author": "Techzilla Global",
     "depends": [

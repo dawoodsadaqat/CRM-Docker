@@ -20,13 +20,23 @@ class CrmLead(models.Model):
         compute="_compute_commission_count"
     )
 
+    total_agent_commission_amount = fields.Float(
+        string="Total Agent Commission",
+        compute="_compute_commission_count"
+    )
+
     def _compute_commission_count(self):
         for lead in self:
-            lead.commission_count = len(lead.commission_ids)
-            lead.total_commission_amount = sum(lead.commission_ids.mapped("commission_amount"))
+            commissions = lead.commission_ids
+            lead.commission_count = len(commissions)
+            lead.total_commission_amount = sum(commissions.mapped("agency_commission_amount"))
+            lead.total_agent_commission_amount = sum(commissions.mapped("agent_commission_amount"))
 
     def action_view_commissions(self):
         self.ensure_one()
+
+        agent_id = self.user_id.id if self.user_id else self.env.user.id
+        manager_id = self.team_id.user_id.id if self.team_id and self.team_id.user_id else False
 
         return {
             "type": "ir.actions.act_window",
@@ -37,6 +47,7 @@ class CrmLead(models.Model):
             "context": {
                 "default_lead_id": self.id,
                 "default_customer_id": self.partner_id.id if self.partner_id else False,
-                "default_agent_id": self.user_id.id if self.user_id else self.env.user.id,
+                "default_agent_id": agent_id,
+                "default_manager_id": manager_id,
             },
         }

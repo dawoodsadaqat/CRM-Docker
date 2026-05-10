@@ -1,20 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
     <record id="view_tz_user_location_tree" model="ir.ui.view">
         <field name="name">tz.user.location.tree</field>
         <field name="model">tz.user.location</field>
         <field name="arch" type="xml">
-            <tree string="Live Tracking">
+            <tree string="User Locations">
                 <field name="user_id"/>
-                <field name="team_ids" widget="many2many_tags"/>
                 <field name="latitude"/>
                 <field name="longitude"/>
                 <field name="accuracy"/>
                 <field name="battery_level"/>
                 <field name="last_seen"/>
-                <field name="is_online"/>
-                <field name="map_url" widget="url"/>
+                <field name="supervisor_id"/>
+                <button
+                    name="action_open_map"
+                    type="object"
+                    string="Open Map"
+                    class="btn-primary"/>
             </tree>
         </field>
     </record>
@@ -23,57 +26,89 @@
         <field name="name">tz.user.location.form</field>
         <field name="model">tz.user.location</field>
         <field name="arch" type="xml">
-            <form string="Live Tracking">
+            <form string="User Location">
+                <header>
+                    <button
+                        name="action_open_map"
+                        type="object"
+                        string="Open in Google Maps"
+                        class="btn-primary"/>
+                </header>
+
                 <sheet>
                     <group>
                         <field name="user_id"/>
-                        <field name="team_ids" widget="many2many_tags" readonly="1"/>
                         <field name="latitude"/>
                         <field name="longitude"/>
                         <field name="accuracy"/>
                         <field name="battery_level"/>
                         <field name="last_seen"/>
-                        <field name="is_online"/>
-                        <field name="map_url" widget="url"/>
+                        <field name="supervisor_id"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-<record id="view_users_form_live_tracking_token" model="ir.ui.view">
-    <field name="name">res.users.form.live.tracking.token</field>
-    <field name="model">res.users</field>
-    <field name="inherit_id" ref="base.view_users_form"/>
-    <field name="arch" type="xml">
 
-        <xpath expr="//page[@name='preferences']" position="after">
-            <page string="Live Tracking" groups="tz_crm_base.group_tz_crm_admin">
-                <group>
-                    <field name="tz_location_tracking_enabled"/>
-                    <field name="tz_location_token" readonly="1"/>
-                    <button name="action_generate_location_token"
-                            string="Generate Location Token"
-                            type="object"
-                            class="btn-primary"/>
-                </group>
-            </page>
-        </xpath>
-
-    </field>
-</record>
     <record id="action_tz_user_location" model="ir.actions.act_window">
-        <field name="name">Live Tracking</field>
+        <field name="name">Team / User Locations</field>
         <field name="res_model">tz.user.location</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem
-        id="menu_tz_live_tracking"
-        name="Live Tracking"
-        parent="tz_crm_base.menu_tz_crm_root"
-        action="action_tz_user_location"
-        sequence="90"
-        groups="tz_crm_base.group_tz_crm_admin,tz_crm_base.group_tz_crm_manager"
-    />
+    <record id="view_tz_user_location_history_tree" model="ir.ui.view">
+        <field name="name">tz.user.location.history.tree</field>
+        <field name="model">tz.user.location.history</field>
+        <field name="arch" type="xml">
+            <tree string="Location History">
+                <field name="user_id"/>
+                <field name="latitude"/>
+                <field name="longitude"/>
+                <field name="accuracy"/>
+                <field name="battery_level"/>
+                <field name="tracked_at"/>
+                <field name="supervisor_id"/>
+                <button
+                    name="action_open_map"
+                    type="object"
+                    string="Open Map"
+                    class="btn-primary"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_user_location_history_form" model="ir.ui.view">
+        <field name="name">tz.user.location.history.form</field>
+        <field name="model">tz.user.location.history</field>
+        <field name="arch" type="xml">
+            <form string="Location History">
+                <header>
+                    <button
+                        name="action_open_map"
+                        type="object"
+                        string="Open in Google Maps"
+                        class="btn-primary"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="latitude"/>
+                        <field name="longitude"/>
+                        <field name="accuracy"/>
+                        <field name="battery_level"/>
+                        <field name="tracked_at"/>
+                        <field name="supervisor_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_user_location_history" model="ir.actions.act_window">
+        <field name="name">Location History</field>
+        <field name="res_model">tz.user.location.history</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
 </odoo>
