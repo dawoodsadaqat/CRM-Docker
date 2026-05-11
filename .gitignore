@@ -1,0 +1,14 @@
+postgres/
+backups/
+*.log
+*.zip
+*.sql
+config/odoo.conf
+.DS_Store
+__pycache__/
+*.pyc
+docker-compose.yml
+id_rsa.pub
+id_rsa.pub.pub
+Icons
+.DS_Store
