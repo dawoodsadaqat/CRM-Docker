@@ -53,7 +53,7 @@
 
     <menuitem id="menu_tz_api_logs"
               name="API Logs"
-              parent="tz_crm_base.menu_tz_crm_config"
+              parent="crm.crm_menu_config"
               action="action_tz_api_log"
               sequence="95"/>
 </odoo>

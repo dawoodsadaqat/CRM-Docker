@@ -45,7 +45,7 @@
 
     <menuitem id="menu_sla_breach_queue"
               name="SLA Breach Queue"
-              parent="tz_crm_base.menu_tz_crm_root"
+              parent="crm.crm_menu_root"
               action="action_sla_breach_queue"
               groups="tz_crm_base.group_tz_crm_agent,tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
               sequence="88"/>

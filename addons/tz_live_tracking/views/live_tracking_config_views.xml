@@ -40,7 +40,7 @@
     <menuitem
         id="menu_tz_live_tracking_config"
         name="Live Tracking Settings"
-        parent="tz_crm_base.menu_tz_crm_config"
+        parent="crm.crm_menu_config"
         action="action_tz_live_tracking_config"
         sequence="95"
         groups="tz_crm_base.group_tz_crm_admin"

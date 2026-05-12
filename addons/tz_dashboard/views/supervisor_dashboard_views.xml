@@ -107,7 +107,7 @@
 
     <menuitem id="menu_tz_supervisor_dashboard"
               name="Team Control Panel"
-              parent="tz_crm_base.menu_tz_crm_root"
+              parent="crm.crm_menu_root"
               action="action_tz_supervisor_dashboard"
               groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
               sequence="86"/>

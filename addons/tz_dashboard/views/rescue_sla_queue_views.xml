@@ -32,7 +32,7 @@
 
     <menuitem id="menu_rescue_sla_queue"
               name="Rescue SLA Queue"
-              parent="tz_crm_base.menu_tz_crm_root"
+              parent="crm.crm_menu_root"
               action="action_rescue_sla_queue"
               groups="tz_crm_base.group_tz_crm_agent,tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
               sequence="89"/>

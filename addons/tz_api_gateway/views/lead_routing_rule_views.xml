@@ -118,7 +118,7 @@
    <menuitem
     id="menu_tz_lead_routing_rule"
     name="Routing Rules"
-    parent="tz_crm_base.menu_tz_crm_config"
+    parent="crm.crm_menu_config"
     action="action_tz_lead_routing_rule"
     sequence="50"
 />

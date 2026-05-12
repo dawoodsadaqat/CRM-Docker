@@ -87,7 +87,7 @@
 
     <menuitem id="menu_tz_lead_history"
               name="Lead History"
-              parent="tz_crm_base.menu_tz_crm_root"
+              parent="crm.crm_menu_root"
               action="action_tz_lead_history"
               groups="tz_crm_base.group_tz_crm_agent,tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
               sequence="90"/>

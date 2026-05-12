@@ -21,7 +21,7 @@
     <menuitem
         id="menu_tz_live_tracking_root"
         name="Live Tracking"
-        parent="tz_crm_base.menu_tz_crm_root"
+        parent="crm.crm_menu_root"
         sequence="80"/>
 
     <menuitem

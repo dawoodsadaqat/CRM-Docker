@@ -1,7 +1,7 @@
 <odoo>
     <menuitem id="menu_tz_properties"
               name="Properties"
-              parent="tz_crm_base.menu_tz_crm_root"
+              parent="crm.crm_menu_root"
               sequence="20"/>
 
     <menuitem id="menu_tz_property_project"

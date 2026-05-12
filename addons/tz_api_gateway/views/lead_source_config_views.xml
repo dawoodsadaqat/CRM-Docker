@@ -86,7 +86,7 @@
 
     <menuitem id="menu_tz_lead_config"
               name="Lead Configurations"
-              parent="tz_crm_base.menu_tz_crm_root"
+              parent="crm.crm_menu_config"
               action="action_tz_lead_config"
               groups="tz_crm_base.group_tz_crm_admin"
               sequence="120"/>

@@ -54,7 +54,7 @@
     <menuitem
         id="menu_tz_lead_assignment_rule"
         name="Auto Assignment Rules"
-        parent="tz_crm_base.menu_tz_crm_config"
+        parent="crm.crm_menu_config"
         action="action_tz_lead_assignment_rule"
         sequence="60"
     />
