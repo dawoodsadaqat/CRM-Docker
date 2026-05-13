@@ -1,14 +1,23 @@
-postgres/
-backups/
-*.log
-*.zip
-*.sql
-config/odoo.conf
-.DS_Store
-__pycache__/
-*.pyc
-docker-compose.yml
+# Local config
+config/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# SSH keys
+id_rsa
 id_rsa.pub
-id_rsa.pub.pub
-Icons
+*.pem
+*.key
+
+# macOS
 .DS_Store
+
+# Local icons/assets if not shared
+Icons/
+
+# Environment files
+.env
+.env.local
+id_rsa*
+docker-compose.yml
