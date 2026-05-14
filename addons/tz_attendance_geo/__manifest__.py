@@ -1,7 +1,7 @@
 {
     "name": "TZ Attendance Geo",
-    "version": "17.0.1.0.0",
-    "summary": "GPS check-in/check-out and fake attendance detection",
+    "version": "17.0.1.0.1",
+    "summary": "Extend standard Odoo Attendances with GPS, maps and fraud warnings",
     "category": "Human Resources",
     "author": "Techzilla",
     "license": "LGPL-3",
