@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_tz_attendance_geo_tree" model="ir.ui.view">
+        <field name="name">tz.attendance.geo.tree</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <tree string="GPS Attendances">
+                <field name="employee_id"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="worked_hours"/>
+                <field name="tz_gps_status"/>
+                <field name="tz_location_age_minutes"/>
+                <field name="tz_distance_between_checkin_checkout"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_attendance_geo_form" model="ir.ui.view">
+        <field name="name">tz.attendance.geo.form</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <form string="GPS Attendance">
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="worked_hours"/>
+                        </group>
+
+                        <group>
+                            <field name="tz_gps_status"/>
+                            <field name="tz_location_age_minutes"/>
+                            <field name="tz_distance_between_checkin_checkout"/>
+                        </group>
+                    </group>
+
+                    <group string="GPS Check-in">
+                        <group>
+                            <field name="tz_check_in_latitude"/>
+                            <field name="tz_check_in_longitude"/>
+                            <field name="tz_check_in_accuracy"/>
+                            <field name="tz_check_in_map_url" widget="url"/>
+                        </group>
+
+                        <group>
+                            <button name="action_open_check_in_map"
+                                    type="object"
+                                    string="Open Check-in Map"
+                                    class="btn-primary"
+                                    invisible="not tz_check_in_map_url"/>
+                        </group>
+                    </group>
+
+                    <group string="GPS Check-out">
+                        <group>
+                            <field name="tz_check_out_latitude"/>
+                            <field name="tz_check_out_longitude"/>
+                            <field name="tz_check_out_accuracy"/>
+                            <field name="tz_check_out_map_url" widget="url"/>
+                        </group>
+
+                        <group>
+                            <button name="action_open_check_out_map"
+                                    type="object"
+                                    string="Open Check-out Map"
+                                    class="btn-primary"
+                                    invisible="not tz_check_out_map_url"/>
+                        </group>
+                    </group>
+
+                    <group string="Fake Attendance Detection">
+                        <field name="tz_gps_warning" nolabel="1"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_attendance_geo_search" model="ir.ui.view">
+        <field name="name">tz.attendance.geo.search</field>
+        <field name="model">hr.attendance</field>
+        <field name="arch" type="xml">
+            <search string="GPS Attendances">
+                <field name="employee_id"/>
+                <filter string="GPS OK"
+                        name="gps_ok"
+                        domain="[('tz_gps_status', '=', 'ok')]"/>
+                <filter string="Suspect"
+                        name="gps_suspect"
+                        domain="[('tz_gps_status', '=', 'suspect')]"/>
+                <filter string="No GPS Data"
+                        name="gps_no_data"
+                        domain="[('tz_gps_status', '=', 'no_data')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Employee"
+                            name="group_employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter string="GPS Status"
+                            name="group_gps_status"
+                            context="{'group_by': 'tz_gps_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_attendance_geo" model="ir.actions.act_window">
+        <field name="name">GPS Attendances</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_attendance_geo_search"/>
+        <field name="views" eval="[
+            (ref('view_tz_attendance_geo_tree'), 'tree'),
+            (ref('view_tz_attendance_geo_form'), 'form')
+        ]"/>
+    </record>
+
+    <menuitem id="menu_tz_attendance_geo"
+              name="GPS Attendances"
+              parent="hr.menu_hr_root"
+              action="action_tz_attendance_geo"
+              sequence="80"/>
+
+</odoo>
