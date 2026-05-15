@@ -26,6 +26,10 @@ class HrEmployee(models.Model):
         store=False,
     )
 
+    tz_basic_salary = fields.Float(
+        string="Basic Salary"
+    )
+
     def _prepare_crm_user_vals(self):
         self.ensure_one()
 
@@ -117,6 +121,7 @@ class HrEmployee(models.Model):
                 "delete": False,
             },
         }
+
     @api.model_create_multi
     def create(self, vals_list):
         employees = super().create(vals_list)
