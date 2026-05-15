@@ -1,6 +1,0 @@
-<odoo noupdate="1">
-    <record id="ir_config_parameter_tz_global_compliance_version" model="ir.config_parameter">
-        <field name="key">tz_global_compliance.version</field>
-        <field name="value">17.0.1.0.0</field>
-    </record>
-</odoo>

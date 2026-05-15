@@ -149,11 +149,6 @@
           action="action_tz_menu_site_visits"
           sequence="70"/>
 
-<menuitem id="menu_tz_crm_dashboard"
-          name="Dashboard"
-          parent="crm.crm_menu_root"
-          action="action_tz_menu_dashboard"
-          sequence="80"/>
 
 
 <!-- Employees missing menus -->
