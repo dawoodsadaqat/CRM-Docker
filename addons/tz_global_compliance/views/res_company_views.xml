@@ -10,7 +10,7 @@
                         <field name="tz_enable_uae_compliance"/>
                         <field name="tz_compliance_country_mode"/>
                         <field name="vat" string="Company TRN"/>
-                        <field name="tz_zatca_readiness_note" attrs="{'invisible': [('tz_compliance_country_mode','!=','saudi')]}"/>
+                        <field name="tz_zatca_readiness_note" invisible="tz_compliance_country_mode != 'saudi'"/>
                     </group>
                 </page>
             </xpath>

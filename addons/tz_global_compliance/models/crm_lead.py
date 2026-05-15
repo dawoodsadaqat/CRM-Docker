@@ -8,7 +8,8 @@ class CrmLead(models.Model):
     @api.constrains("company_id", "partner_id")
     def _check_tz_compliance_context(self):
         for lead in self:
-            if not lead.company_id:
-                raise ValidationError("Lead must have a company.")
-            if lead.partner_id and lead.partner_id.company_id and lead.partner_id.company_id != lead.company_id:
-                raise ValidationError("Lead customer company must match lead company.")
+            company = lead.company_id
+            if not company or not company.tz_enable_uae_compliance:
+                continue
+            if lead.partner_id and lead.partner_id.company_id and lead.partner_id.company_id != company:
+                raise ValidationError("Lead customer company must match lead company under compliance mode.")
