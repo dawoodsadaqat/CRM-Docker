@@ -1,0 +1,11 @@
+<odoo>
+    <!-- Agent: own activities only -->
+    <record id="rule_followup_agent_own" model="ir.rule">
+        <field name="name">Follow-up Reminders: Own Only</field>
+        <field name="model_id" ref="mail.model_mail_activity"/>
+        <field name="domain_force">
+            [('summary','=','Follow-up Reminder'), '|', ('user_id','=',user.id), ('user_id.supervisor_id','=',user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

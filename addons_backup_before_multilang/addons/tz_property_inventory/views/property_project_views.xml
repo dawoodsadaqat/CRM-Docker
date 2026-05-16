@@ -1,0 +1,103 @@
+<odoo>
+    <record id="view_tz_property_project_tree" model="ir.ui.view">
+        <field name="name">tz.property.project.tree</field>
+        <field name="model">tz.property.project</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="developer_id"/>
+                <field name="city"/>
+                <field name="area"/>
+                <field name="project_type"/>
+                <field name="completion_status"/>
+                <field name="handover_date"/>
+                <field name="building_count"/>
+                <field name="unit_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_property_project_form" model="ir.ui.view">
+        <field name="name">tz.property.project.form</field>
+        <field name="model">tz.property.project</field>
+        <field name="arch" type="xml">
+            <form string="Property Project">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="developer_id"/>
+                            <field name="city"/>
+                            <field name="area"/>
+                        </group>
+                        <group>
+                            <field name="project_type"/>
+                            <field name="completion_status"/>
+                            <field name="handover_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+
+                        <page string="Buildings">
+                            <field name="building_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="address"/>
+                                    <field name="floors"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Units">
+                            <field name="unit_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="unit_number"/>
+                                    <field name="property_type"/>
+                                    <field name="bedrooms"/>
+                                    <field name="sale_price"/>
+                                    <field name="rent_price"/>
+                                    <field name="availability"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_property_project_search" model="ir.ui.view">
+        <field name="name">tz.property.project.search</field>
+        <field name="model">tz.property.project</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="developer_id"/>
+                <field name="city"/>
+                <field name="area"/>
+
+                <filter string="Ready" name="ready" domain="[('completion_status','=','ready')]"/>
+                <filter string="Off Plan" name="off_plan" domain="[('completion_status','=','off_plan')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="City" name="group_city" context="{'group_by':'city'}"/>
+                    <filter string="Area" name="group_area" context="{'group_by':'area'}"/>
+                    <filter string="Developer" name="group_developer" context="{'group_by':'developer_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'completion_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_property_project" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">tz.property.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_property_project_search"/>
+    </record>
+</odoo>

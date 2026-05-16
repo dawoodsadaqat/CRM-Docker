@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="tz_pwa_web_layout" inherit_id="web.layout">
+        <xpath expr="//head" position="inside">
+
+            <link rel="manifest" href="/manifest.webmanifest"/>
+
+            <meta name="theme-color" content="#111111"/>
+            <meta name="mobile-web-app-capable" content="yes"/>
+
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+            <meta name="apple-mobile-web-app-title" content="TZ CRM"/>
+            <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+            <link rel="apple-touch-icon" href="/tz_pwa/static/src/img/icon-192.png"/>
+
+        </xpath>
+    </template>
+
+</odoo>

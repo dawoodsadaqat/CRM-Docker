@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Internal technical groups. They are not meant to be selected on users. -->
+    <record id="group_feature_crm_leads" model="res.groups"><field name="name">TZ Feature - CRM Leads</field></record>
+    <record id="group_feature_sales" model="res.groups"><field name="name">TZ Feature - Sales</field></record>
+    <record id="group_feature_reporting" model="res.groups"><field name="name">TZ Feature - Reporting</field></record>
+    <record id="group_feature_configuration" model="res.groups"><field name="name">TZ Feature - CRM Configuration</field></record>
+
+    <record id="group_feature_property_projects" model="res.groups"><field name="name">TZ Feature - Property Projects</field></record>
+    <record id="group_feature_property_buildings" model="res.groups"><field name="name">TZ Feature - Property Buildings</field></record>
+    <record id="group_feature_property_units" model="res.groups"><field name="name">TZ Feature - Property Units</field></record>
+    <record id="group_feature_property_listings" model="res.groups"><field name="name">TZ Feature - Property Listings</field></record>
+
+    <record id="group_feature_site_visits" model="res.groups"><field name="name">TZ Feature - Site Visits</field></record>
+    <record id="group_feature_call_center" model="res.groups"><field name="name">TZ Feature - Call Center</field></record>
+    <record id="group_feature_whatsapp" model="res.groups"><field name="name">TZ Feature - WhatsApp</field></record>
+    <record id="group_feature_commission" model="res.groups"><field name="name">TZ Feature - Commission</field></record>
+    <record id="group_feature_accounting_links" model="res.groups"><field name="name">TZ Feature - Accounting/Invoicing</field></record>
+    <record id="group_feature_dashboards" model="res.groups"><field name="name">TZ Feature - Dashboards</field></record>
+    <record id="group_feature_agent_performance" model="res.groups"><field name="name">TZ Feature - Agent Performance</field></record>
+    <record id="group_feature_followup_reminders" model="res.groups"><field name="name">TZ Feature - Follow-up Reminders</field></record>
+    <record id="group_feature_team_control" model="res.groups"><field name="name">TZ Feature - Team Control Panel</field></record>
+    <record id="group_feature_team_followup" model="res.groups"><field name="name">TZ Feature - Team Follow-up Monitor</field></record>
+    <record id="group_feature_sla_breach" model="res.groups"><field name="name">TZ Feature - SLA Breach Queue</field></record>
+    <record id="group_feature_rescue_sla" model="res.groups"><field name="name">TZ Feature - Rescue SLA Queue</field></record>
+    <record id="group_feature_lead_categories" model="res.groups"><field name="name">TZ Feature - Lead Categories</field></record>
+    <record id="group_feature_lead_history" model="res.groups"><field name="name">TZ Feature - Lead History</field></record>
+    <record id="group_feature_api_gateway" model="res.groups"><field name="name">TZ Feature - API Gateway</field></record>
+    <record id="group_feature_lead_assignment" model="res.groups"><field name="name">TZ Feature - Lead Assignment Rules</field></record>
+    <record id="group_feature_live_tracking" model="res.groups"><field name="name">TZ Feature - Live Tracking</field></record>
+    <record id="group_feature_geo_attendance" model="res.groups"><field name="name">TZ Feature - Geo Attendance</field></record>
+    <record id="group_feature_expenses" model="res.groups"><field name="name">TZ Feature - Expenses</field></record>
+    <record id="group_feature_employees" model="res.groups"><field name="name">TZ Feature - Employees</field></record>
+    <record id="group_feature_payroll" model="res.groups"><field name="name">TZ Feature - Payroll</field></record>
+
+    <!-- Role configurable module/submodule features. -->
+    <record id="feature_crm_leads" model="tz.module.feature">
+        <field name="name">CRM Leads</field><field name="code">crm_leads</field><field name="category">crm</field><field name="sequence">10</field><field name="technical_group_id" ref="group_feature_crm_leads"/>
+        <field name="menu_xml_ids">crm.crm_lead_menu_root
+crm.crm_lead_opportunities
+crm.crm_lead_all_leads</field>
+        <field name="menu_name_keywords">Leads
+Pipeline</field>
+    </record>
+
+    <record id="feature_sales" model="tz.module.feature">
+        <field name="name">Sales</field><field name="code">sales</field><field name="category">sales</field><field name="sequence">15</field><field name="technical_group_id" ref="group_feature_sales"/>
+        <field name="menu_name_keywords">Sales</field>
+    </record>
+
+    <record id="feature_reporting" model="tz.module.feature">
+        <field name="name">Reporting</field><field name="code">reporting</field><field name="category">dashboard</field><field name="sequence">16</field><field name="technical_group_id" ref="group_feature_reporting"/>
+        <field name="menu_name_keywords">Reporting</field>
+    </record>
+
+    <record id="feature_configuration" model="tz.module.feature">
+        <field name="name">CRM Configuration</field><field name="code">crm_configuration</field><field name="category">settings</field><field name="sequence">17</field><field name="technical_group_id" ref="group_feature_configuration"/>
+        <field name="menu_xml_ids">crm.crm_menu_config
+tz_crm_base.menu_tz_crm_config</field>
+        <field name="menu_name_keywords">Configuration</field>
+    </record>
+
+    <record id="feature_property_projects" model="tz.module.feature">
+        <field name="name">Property Projects</field><field name="code">property_projects</field><field name="category">property</field><field name="sequence">20</field><field name="technical_group_id" ref="group_feature_property_projects"/>
+        <field name="menu_xml_ids">tz_property_inventory.menu_tz_property_project</field>
+        <field name="menu_name_keywords">Projects</field>
+    </record>
+
+    <record id="feature_property_buildings" model="tz.module.feature">
+        <field name="name">Property Buildings</field><field name="code">property_buildings</field><field name="category">property</field><field name="sequence">21</field><field name="technical_group_id" ref="group_feature_property_buildings"/>
+        <field name="menu_xml_ids">tz_property_inventory.menu_tz_property_building</field>
+        <field name="menu_name_keywords">Buildings</field>
+    </record>
+
+    <record id="feature_property_units" model="tz.module.feature">
+        <field name="name">Property Units</field><field name="code">property_units</field><field name="category">property</field><field name="sequence">22</field><field name="technical_group_id" ref="group_feature_property_units"/>
+        <field name="menu_xml_ids">tz_property_inventory.menu_tz_properties
+tz_property_inventory.menu_tz_property_unit</field>
+        <field name="menu_name_keywords">Properties
+Units</field>
+    </record>
+
+    <record id="feature_property_listings" model="tz.module.feature">
+        <field name="name">Property Listings</field><field name="code">property_listings</field><field name="category">property</field><field name="sequence">23</field><field name="technical_group_id" ref="group_feature_property_listings"/>
+        <field name="menu_xml_ids">tz_property_inventory.menu_tz_property_listing</field>
+        <field name="menu_name_keywords">Listings</field>
+    </record>
+
+    <record id="feature_site_visits" model="tz.module.feature">
+        <field name="name">Site Visits</field><field name="code">site_visits</field><field name="category">crm</field><field name="sequence">30</field><field name="technical_group_id" ref="group_feature_site_visits"/>
+        <field name="menu_xml_ids">tz_site_visit.menu_tz_site_visit_root
+tz_menu_structure.menu_tz_crm_site_visits</field>
+        <field name="menu_name_keywords">Site Visits</field>
+    </record>
+
+    <record id="feature_whatsapp" model="tz.module.feature">
+        <field name="name">WhatsApp</field><field name="code">whatsapp</field><field name="category">communication</field><field name="sequence">40</field><field name="technical_group_id" ref="group_feature_whatsapp"/>
+        <field name="menu_xml_ids">tz_whatsapp.menu_tz_whatsapp_root</field>
+        <field name="menu_name_keywords">WhatsApp</field>
+    </record>
+
+    <record id="feature_call_center" model="tz.module.feature">
+        <field name="name">Call Center</field><field name="code">call_center</field><field name="category">communication</field><field name="sequence">50</field><field name="technical_group_id" ref="group_feature_call_center"/>
+        <field name="menu_xml_ids">tz_call_center.menu_tz_call_center_root</field>
+        <field name="menu_name_keywords">Call Center</field>
+    </record>
+
+    <record id="feature_commission" model="tz.module.feature">
+        <field name="name">Commission</field><field name="code">commission</field><field name="category">finance</field><field name="sequence">60</field><field name="technical_group_id" ref="group_feature_commission"/>
+        <field name="menu_xml_ids">tz_commission.menu_tz_commission_root</field>
+        <field name="menu_name_keywords">Commissions
+Commission</field>
+    </record>
+
+    <record id="feature_accounting_links" model="tz.module.feature">
+        <field name="name">Accounting / Invoicing</field><field name="code">accounting_links</field><field name="category">finance</field><field name="sequence">70</field><field name="technical_group_id" ref="group_feature_accounting_links"/>
+        <field name="menu_xml_ids">tz_menu_structure.menu_tz_main_accounting
+tz_menu_structure.menu_tz_customer_invoices
+tz_menu_structure.menu_tz_vendor_bills
+tz_menu_structure.menu_tz_commission_invoices
+tz_menu_structure.menu_tz_accounting_invoicing</field>
+        <field name="menu_name_keywords">Accounting
+Invoicing
+Customer Invoices
+Vendor Bills
+Commission Invoices</field>
+    </record>
+
+    <record id="feature_dashboards" model="tz.module.feature">
+        <field name="name">Dashboard</field><field name="code">dashboards</field><field name="category">dashboard</field><field name="sequence">80</field><field name="technical_group_id" ref="group_feature_dashboards"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_tz_dashboard_root</field>
+        <field name="menu_name_keywords">Dashboard
+Dashboards</field>
+    </record>
+
+    <record id="feature_agent_performance" model="tz.module.feature">
+        <field name="name">Agent Performance</field><field name="code">agent_performance</field><field name="category">dashboard</field><field name="sequence">81</field><field name="technical_group_id" ref="group_feature_agent_performance"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_tz_agent_performance</field>
+        <field name="menu_name_keywords">Agent Performance</field>
+    </record>
+
+    <record id="feature_followup_reminders" model="tz.module.feature">
+        <field name="name">Follow-up Reminders</field><field name="code">followup_reminders</field><field name="category">dashboard</field><field name="sequence">82</field><field name="technical_group_id" ref="group_feature_followup_reminders"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_followup_reminders</field>
+        <field name="menu_name_keywords">Follow-up Reminders</field>
+    </record>
+
+    <record id="feature_team_control" model="tz.module.feature">
+        <field name="name">Team Control Panel</field><field name="code">team_control_panel</field><field name="category">dashboard</field><field name="sequence">83</field><field name="technical_group_id" ref="group_feature_team_control"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_tz_supervisor_dashboard</field>
+        <field name="menu_name_keywords">Team Control Panel</field>
+    </record>
+
+    <record id="feature_team_followup" model="tz.module.feature">
+        <field name="name">Team Follow-up Monitor</field><field name="code">team_followup_monitor</field><field name="category">dashboard</field><field name="sequence">84</field><field name="technical_group_id" ref="group_feature_team_followup"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_team_followup_monitor</field>
+        <field name="menu_name_keywords">Team Follow-up Monitor</field>
+    </record>
+
+    <record id="feature_sla_breach" model="tz.module.feature">
+        <field name="name">SLA Breach Queue</field><field name="code">sla_breach_queue</field><field name="category">dashboard</field><field name="sequence">85</field><field name="technical_group_id" ref="group_feature_sla_breach"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_sla_breach_queue</field>
+        <field name="menu_name_keywords">SLA Breach Queue</field>
+    </record>
+
+    <record id="feature_rescue_sla" model="tz.module.feature">
+        <field name="name">Rescue SLA Queue</field><field name="code">rescue_sla_queue</field><field name="category">dashboard</field><field name="sequence">86</field><field name="technical_group_id" ref="group_feature_rescue_sla"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_rescue_sla_queue</field>
+        <field name="menu_name_keywords">Rescue SLA Queue</field>
+    </record>
+
+    <record id="feature_lead_categories" model="tz.module.feature">
+        <field name="name">Lead Categories</field><field name="code">lead_categories</field><field name="category">settings</field><field name="sequence">87</field><field name="technical_group_id" ref="group_feature_lead_categories"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_tz_lead_category</field>
+        <field name="menu_name_keywords">Lead Categories</field>
+    </record>
+
+    <record id="feature_lead_history" model="tz.module.feature">
+        <field name="name">Lead History</field><field name="code">lead_history</field><field name="category">dashboard</field><field name="sequence">88</field><field name="technical_group_id" ref="group_feature_lead_history"/>
+        <field name="menu_xml_ids">tz_dashboard.menu_tz_lead_history</field>
+        <field name="menu_name_keywords">Lead History</field>
+    </record>
+
+    <record id="feature_live_tracking" model="tz.module.feature">
+        <field name="name">Live Tracking</field><field name="code">live_tracking</field><field name="category">tracking</field><field name="sequence">90</field><field name="technical_group_id" ref="group_feature_live_tracking"/>
+        <field name="menu_xml_ids">tz_live_tracking.menu_tz_live_tracking_root
+tz_live_tracking.menu_tz_my_tracking
+tz_live_tracking.menu_tz_user_location
+tz_live_tracking.menu_tz_user_location_history
+tz_live_tracking.menu_tz_live_tracking_config</field>
+        <field name="menu_name_keywords">Live Tracking
+My Tracking
+Team / User Locations
+Location History
+Live Tracking Settings</field>
+    </record>
+
+    <record id="feature_api_gateway" model="tz.module.feature">
+        <field name="name">API Gateway</field><field name="code">api_gateway</field><field name="category">api</field><field name="sequence">100</field><field name="technical_group_id" ref="group_feature_api_gateway"/>
+        <field name="menu_xml_ids">tz_api_gateway.menu_tz_api_root
+tz_api_gateway.menu_tz_lead_config
+tz_api_gateway.menu_tz_api_logs
+tz_api_gateway.menu_tz_lead_routing_rule</field>
+        <field name="menu_name_keywords">API Gateway
+Lead Configurations
+API Logs
+Routing Rules</field>
+    </record>
+
+    <record id="feature_lead_assignment" model="tz.module.feature">
+        <field name="name">Lead Assignment Rules</field><field name="code">lead_assignment_rules</field><field name="category">settings</field><field name="sequence">110</field><field name="technical_group_id" ref="group_feature_lead_assignment"/>
+        <field name="menu_xml_ids">tz_lead_assignment.menu_tz_lead_assignment_rule</field>
+        <field name="menu_name_keywords">Auto Assignment Rules
+Lead Assignment Rules</field>
+    </record>
+
+    <record id="feature_geo_attendance" model="tz.module.feature">
+        <field name="name">Geo Attendance</field><field name="code">geo_attendance</field><field name="category">hr</field><field name="sequence">120</field><field name="technical_group_id" ref="group_feature_geo_attendance"/>
+        <field name="menu_xml_ids">tz_menu_structure.menu_tz_employees_attendance</field>
+        <field name="menu_name_keywords">Attendance</field>
+    </record>
+
+    <record id="feature_expenses" model="tz.module.feature">
+        <field name="name">Expenses</field><field name="code">expenses</field><field name="category">hr</field><field name="sequence">130</field><field name="technical_group_id" ref="group_feature_expenses"/>
+        <field name="menu_xml_ids">tz_menu_structure.menu_tz_accounting_expenses</field>
+        <field name="menu_name_keywords">Expenses</field>
+    </record>
+
+    <record id="feature_employees" model="tz.module.feature">
+        <field name="name">Employees</field><field name="code">employees</field><field name="category">hr</field><field name="sequence">140</field><field name="technical_group_id" ref="group_feature_employees"/>
+        <field name="menu_xml_ids">hr.menu_hr_root</field>
+        <field name="menu_name_keywords">Employees</field>
+    </record>
+
+    <record id="feature_payroll" model="tz.module.feature">
+        <field name="name">Payroll</field><field name="code">payroll</field><field name="category">hr</field><field name="sequence">150</field><field name="technical_group_id" ref="group_feature_payroll"/>
+        <field name="menu_xml_ids">tz_payroll.menu_tz_payroll_root
+tz_payroll.menu_tz_payroll
+tz_menu_structure.menu_tz_main_payroll
+tz_menu_structure.menu_tz_payroll_batches
+tz_menu_structure.menu_tz_payroll_lines</field>
+        <field name="menu_name_keywords">Payroll
+Monthly Payrolls
+Payroll Batches
+Payroll Lines</field>
+    </record>
+
+</odoo>

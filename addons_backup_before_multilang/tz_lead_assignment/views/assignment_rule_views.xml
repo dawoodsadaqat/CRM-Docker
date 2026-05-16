@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_tz_lead_assignment_rule_tree" model="ir.ui.view">
+        <field name="name">tz.lead.assignment.rule.tree</field>
+        <field name="model">tz.lead.assignment.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="team_id"/>
+                <field name="assignment_type"/>
+                <field name="assignment_sequence"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_lead_assignment_rule_form" model="ir.ui.view">
+        <field name="name">tz.lead.assignment.rule.form</field>
+        <field name="model">tz.lead.assignment.rule</field>
+        <field name="arch" type="xml">
+            <form string="Lead Assignment Rule">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="team_id"/>
+                            <field name="assignment_type"/>
+                            <field name="active"/>
+                        </group>
+
+                        <group>
+                            <field name="assignment_sequence" readonly="1"/>
+                            <field name="location"/>
+                            <field name="performance_weight"/>
+                        </group>
+                    </group>
+
+                    <group string="Eligible Agents">
+                        <field name="agent_ids"
+       widget="many2many_tags"
+       domain="[('groups_id', 'in', [%(tz_crm_base.group_tz_crm_agent)d])]"/>   </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_lead_assignment_rule" model="ir.actions.act_window">
+        <field name="name">Auto Assignment Rules</field>
+        <field name="res_model">tz.lead.assignment.rule</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_tz_lead_assignment_rule"
+        name="Auto Assignment Rules"
+        parent="crm.crm_menu_config"
+        action="action_tz_lead_assignment_rule"
+        sequence="60"
+    />
+
+</odoo>

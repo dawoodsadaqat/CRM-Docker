@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- ================= CRM LEADS MOBILE KANBAN ================= -->
+
+    <record id="view_crm_lead_mobile_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.mobile.kanban</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <kanban class="o_mobile_crm_kanban">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email_from"/>
+                <field name="expected_revenue"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="o_mobile_card">
+
+                            <div class="o_mobile_card_title">
+                                <field name="name"/>
+                            </div>
+
+                            <div class="o_mobile_card_line">
+                                👤 <field name="partner_id"/>
+                            </div>
+
+                            <div class="o_mobile_card_line">
+                                🧑‍💼 Agent: <field name="user_id"/>
+                            </div>
+
+                            <div class="o_mobile_card_line">
+                                📌 Stage: <field name="stage_id"/>
+                            </div>
+
+                            <div class="o_mobile_card_line">
+                                💰 Revenue: <field name="expected_revenue"/>
+                            </div>
+
+                            <div class="o_mobile_actions">
+                                <a t-if="record.phone.raw_value"
+                                   t-att-href="'tel:' + record.phone.raw_value"
+                                   class="btn btn-primary">
+                                    Call
+                                </a>
+
+                                <a t-if="record.mobile.raw_value"
+                                   t-att-href="'https://wa.me/' + record.mobile.raw_value"
+                                   class="btn btn-success">
+                                    WhatsApp
+                                </a>
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_crm_lead_mobile" model="ir.actions.act_window">
+        <field name="name">Mobile Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="view_crm_lead_mobile_kanban"/>
+    </record>
+
+    <menuitem
+        id="menu_mobile_crm_root"
+        name="Mobile CRM"
+        sequence="5"
+    />
+
+    <menuitem
+        id="menu_mobile_crm_leads"
+        name="Leads"
+        parent="menu_mobile_crm_root"
+        action="action_crm_lead_mobile"
+        sequence="1"
+    />
+
+</odoo>

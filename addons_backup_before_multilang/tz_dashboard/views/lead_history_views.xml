@@ -1,0 +1,94 @@
+<odoo>
+    <record id="view_tz_lead_history_tree" model="ir.ui.view">
+        <field name="name">tz.lead.history.tree</field>
+        <field name="model">tz.lead.history</field>
+        <field name="arch" type="xml">
+           <tree string="Lead History">
+    		<field name="event_time"/>
+    		<field name="event_type"/>
+    		<field name="lead_id"/>
+    		<field name="new_agent_id" string="Agent"/>
+    		<field name="performed_by_id"/>
+
+    		<!-- Required but hidden by default -->
+    		<field name="old_agent_id" optional="hide"/>
+    		<field name="sla_deadline" optional="hide"/>
+    		<field name="rescue_deadline" optional="hide"/>
+
+    <field name="note" optional="show"/>
+</tree>
+        </field>
+    </record>
+
+    <record id="view_tz_lead_history_search" model="ir.ui.view">
+        <field name="name">tz.lead.history.search</field>
+        <field name="model">tz.lead.history</field>
+        <field name="arch" type="xml">
+            <search string="Lead History">
+                <field name="lead_id"/>
+                <field name="event_type"/>
+                <field name="old_agent_id"/>
+                <field name="new_agent_id"/>
+                <field name="performed_by_id"/>
+
+                <filter string="Lead Created" name="lead_created"
+                        domain="[('event_type','=','lead_created')]"/>
+
+                <filter string="Agent Assigned" name="agent_assigned"
+                        domain="[('event_type','=','agent_assigned')]"/>
+
+                <filter string="Stage Changed" name="stage_changed"
+                        domain="[('event_type','=','stage_changed')]"/>
+
+                <filter string="SLA Breached" name="sla_breached"
+                        domain="[('event_type','=','sla_breached')]"/>
+
+                <filter string="Rescue Started" name="rescue_started"
+                        domain="[('event_type','=','rescue_started')]"/>
+
+                <filter string="Rescue Breached" name="rescue_breached"
+                        domain="[('event_type','=','rescue_breached')]"/>
+
+                <filter string="Rescued" name="rescued"
+                        domain="[('event_type','=','rescued')]"/>
+
+                <filter string="Follow-up Done" name="followup_done"
+                        domain="[('event_type','=','followup_done')]"/>
+
+                <filter string="Escalations" name="escalations"
+                        domain="[('event_type','=','escalation_created')]"/>
+
+                <filter string="Won" name="won"
+                        domain="[('event_type','=','won')]"/>
+
+                <filter string="Lost" name="lost"
+                        domain="[('event_type','=','lost')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Event Type" name="group_event_type"
+                            context="{'group_by':'event_type'}"/>
+                    <filter string="Lead" name="group_lead"
+                            context="{'group_by':'lead_id'}"/>
+                    <filter string="New Agent" name="group_new_agent"
+                            context="{'group_by':'new_agent_id'}"/>
+                    <filter string="Performed By" name="group_performed_by"
+                            context="{'group_by':'performed_by_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_lead_history" model="ir.actions.act_window">
+        <field name="name">Lead History</field>
+        <field name="res_model">tz.lead.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_lead_history_search"/>
+    </record>
+
+    <menuitem id="menu_tz_lead_history"
+              name="Lead History"
+              parent="crm.crm_menu_root"
+              action="action_tz_lead_history"
+              groups="tz_crm_base.group_tz_crm_agent,tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
+              sequence="90"/>
+</odoo>

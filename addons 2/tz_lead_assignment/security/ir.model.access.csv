@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tz_lead_assignment_rule_admin,tz.lead.assignment.rule.admin,model_tz_lead_assignment_rule,tz_crm_base.group_tz_crm_admin,1,1,1,1
+access_tz_lead_assignment_rule_manager,tz.lead.assignment.rule.manager,model_tz_lead_assignment_rule,tz_crm_base.group_tz_crm_manager,1,1,1,0

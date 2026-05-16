@@ -1,0 +1,55 @@
+<odoo>
+    <record id="view_crm_lead_form_realestate" model="ir.ui.view">
+        <field name="name">crm.lead.form.realestate</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//group" position="inside">
+                <group string="Real Estate Requirements">
+                    <field name="property_type"/>
+                    <field name="preferred_location"/>
+                    <field name="budget_min"/>
+                    <field name="budget_max"/>
+                    <field name="buying_purpose"/>
+                    <field name="lead_temperature"/>
+                    <field name="lead_score"/>
+                    <field name="next_followup_date"/>
+                </group>
+
+                <group string="Communication Status">
+                    <field name="whatsapp_status"/>
+                    <field name="call_status"/>
+                    <field name="site_visit_status"/>
+                    <field name="lost_reason_detail"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_search_realestate" model="ir.ui.view">
+        <field name="name">crm.lead.search.realestate</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Hot Leads"
+                        name="filter_hot_leads"
+                        domain="[('lead_temperature','=','hot')]"/>
+
+                <filter string="Follow-up Pending"
+                        name="filter_followup_pending"
+                        domain="[('next_followup_date','!=',False)]"/>
+
+                <group expand="0" string="Real Estate">
+                    <filter string="Property Type"
+                            name="group_property_type"
+                            context="{'group_by': 'property_type'}"/>
+
+                    <filter string="Lead Temperature"
+                            name="group_lead_temperature"
+                            context="{'group_by': 'lead_temperature'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

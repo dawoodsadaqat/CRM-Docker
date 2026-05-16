@@ -1,0 +1,94 @@
+<odoo>
+    <record id="view_tz_whatsapp_message_tree" model="ir.ui.view">
+        <field name="name">tz.whatsapp.message.tree</field>
+        <field name="model">tz.whatsapp.message</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="message_datetime"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="phone_number"/>
+                <field name="direction"/>
+                <field name="status"/>
+                <field name="template_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_whatsapp_message_form" model="ir.ui.view">
+        <field name="name">tz.whatsapp.message.form</field>
+        <field name="model">tz.whatsapp.message</field>
+        <field name="arch" type="xml">
+            <form string="WhatsApp Message">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="lead_id"/>
+                            <field name="customer_id"/>
+                            <field name="agent_id"/>
+                            <field name="phone_number"/>
+                        </group>
+
+                        <group>
+                            <field name="message_datetime"/>
+                            <field name="direction"/>
+                            <field name="status"/>
+                            <field name="template_name"/>
+                            <field name="external_message_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Message">
+                            <field name="message_body"/>
+                        </page>
+
+                        <page string="Failure Reason">
+                            <field name="failure_reason"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_whatsapp_message_search" model="ir.ui.view">
+        <field name="name">tz.whatsapp.message.search</field>
+        <field name="model">tz.whatsapp.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="phone_number"/>
+                <field name="template_name"/>
+
+                <filter string="Outgoing" name="outgoing" domain="[('direction','=','outgoing')]"/>
+                <filter string="Incoming" name="incoming" domain="[('direction','=','incoming')]"/>
+                <filter string="Draft" name="draft" domain="[('status','=','draft')]"/>
+                <filter string="Sent" name="sent" domain="[('status','=','sent')]"/>
+                <filter string="Delivered" name="delivered" domain="[('status','=','delivered')]"/>
+                <filter string="Read" name="read" domain="[('status','=','read')]"/>
+                <filter string="Failed" name="failed" domain="[('status','=','failed')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Agent" name="group_agent" context="{'group_by':'agent_id'}"/>
+                    <filter string="Direction" name="group_direction" context="{'group_by':'direction'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'status'}"/>
+                    <filter string="Message Date" name="group_message_date" context="{'group_by':'message_datetime'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_whatsapp_message" model="ir.actions.act_window">
+        <field name="name">WhatsApp Messages</field>
+        <field name="res_model">tz.whatsapp.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_whatsapp_message_search"/>
+    </record>
+</odoo>

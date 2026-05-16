@@ -1,0 +1,54 @@
+<odoo>
+    <record id="view_crm_lead_form_conversion_tracking" model="ir.ui.view">
+        <field name="name">crm.lead.form.conversion.tracking</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_mark_first_response"
+                        string="Mark First Response"
+                        type="object"
+                        class="btn-primary"
+                        invisible="first_response_date != False"/>
+
+                <button name="action_mark_followup_done"
+                        string="Mark Follow-up Done"
+                        type="object"
+                        invisible="next_followup_date == False"/>
+            </xpath>
+
+            <xpath expr="//sheet//group" position="inside">
+                <group string="Conversion Tracking">
+    <field name="conversion_stage"/>
+    <field name="conversion_stage_date" readonly="1"/>
+    <field name="deal_value"/>
+    <field name="lead_category_id"/>
+    <field name="source_id"/>
+    <field name="medium_id"/>
+    <field name="campaign_id"/>
+</group>
+
+                <group string="SLA Tracking">
+                    <field name="first_response_date"/>
+                    <field name="response_time_hours" readonly="1"/>
+                    <field name="sla_deadline" readonly="1"/>
+                    <field name="sla_status" readonly="1"/>
+                </group>
+
+                <group string="Follow-up Tracking">
+                    <field name="next_followup_date"/>
+                    <field name="followup_status" readonly="1"/>
+                </group>
+
+                <group string="Lead Aging">
+                    <field name="lead_age_days" readonly="1"/>
+                    <field name="stage_age_days" readonly="1"/>
+                    <field name="is_stuck" readonly="1"/>
+                </group>
+            </xpath>
+
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,90 @@
+<odoo>
+    <record id="view_tz_property_listing_tree" model="ir.ui.view">
+        <field name="name">tz.property.listing.tree</field>
+        <field name="model">tz.property.listing</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="project_id"/>
+                <field name="building_id"/>
+                <field name="area"/>
+                <field name="property_type"/>
+                <field name="listing_type"/>
+                <field name="listing_price"/>
+                <field name="status"/>
+                <field name="published_date"/>
+                <field name="portal_reference"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_property_listing_form" model="ir.ui.view">
+        <field name="name">tz.property.listing.form</field>
+        <field name="model">tz.property.listing</field>
+        <field name="arch" type="xml">
+            <form string="Property Listing">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="unit_id"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="building_id" readonly="1"/>
+                            <field name="area" readonly="1"/>
+                            <field name="property_type" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="listing_type"/>
+                            <field name="listing_price"/>
+                            <field name="status"/>
+                            <field name="published_date"/>
+                            <field name="portal_reference"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_property_listing_search" model="ir.ui.view">
+        <field name="name">tz.property.listing.search</field>
+        <field name="model">tz.property.listing</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="project_id"/>
+                <field name="area"/>
+                <field name="property_type"/>
+                <field name="portal_reference"/>
+
+                <filter string="Published" name="published" domain="[('status','=','published')]"/>
+                <filter string="Draft" name="draft" domain="[('status','=','draft')]"/>
+                <filter string="Sale" name="sale" domain="[('listing_type','=','sale')]"/>
+                <filter string="Rent" name="rent" domain="[('listing_type','=','rent')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="group_project" context="{'group_by':'project_id'}"/>
+                    <filter string="Area" name="group_area" context="{'group_by':'area'}"/>
+                    <filter string="Property Type" name="group_property_type" context="{'group_by':'property_type'}"/>
+                    <filter string="Listing Type" name="group_listing_type" context="{'group_by':'listing_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_property_listing" model="ir.actions.act_window">
+        <field name="name">Listings</field>
+        <field name="res_model">tz.property.listing</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_property_listing_search"/>
+    </record>
+</odoo>

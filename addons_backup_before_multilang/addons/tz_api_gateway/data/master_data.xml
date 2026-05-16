@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- PROPERTY TYPES -->
+
+    <record id="property_type_apartment" model="tz.property.type">
+        <field name="name">Apartment</field>
+        <field name="code">apartment</field>
+    </record>
+
+    <record id="property_type_villa" model="tz.property.type">
+        <field name="name">Villa</field>
+        <field name="code">villa</field>
+    </record>
+
+    <record id="property_type_townhouse" model="tz.property.type">
+        <field name="name">Townhouse</field>
+        <field name="code">townhouse</field>
+    </record>
+
+    <record id="property_type_office" model="tz.property.type">
+        <field name="name">Office</field>
+        <field name="code">office</field>
+    </record>
+
+    <record id="property_type_retail" model="tz.property.type">
+        <field name="name">Retail</field>
+        <field name="code">retail</field>
+    </record>
+
+    <record id="property_type_land" model="tz.property.type">
+        <field name="name">Land</field>
+        <field name="code">land</field>
+    </record>
+
+
+    <!-- LEAD TEMPERATURE -->
+
+    <record id="lead_temp_hot" model="tz.lead.temperature">
+        <field name="name">Hot</field>
+        <field name="code">hot</field>
+    </record>
+
+    <record id="lead_temp_warm" model="tz.lead.temperature">
+        <field name="name">Warm</field>
+        <field name="code">warm</field>
+    </record>
+
+    <record id="lead_temp_cold" model="tz.lead.temperature">
+        <field name="name">Cold</field>
+        <field name="code">cold</field>
+    </record>
+
+</odoo>

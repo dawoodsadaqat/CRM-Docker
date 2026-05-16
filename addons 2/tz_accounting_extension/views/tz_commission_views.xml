@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_tz_commission_form_accounting_extension" model="ir.ui.view">
+
+        <field name="name">tz.commission.form.accounting.extension</field>
+
+        <field name="model">tz.commission</field>
+
+        <field name="inherit_id" ref="tz_commission.view_tz_commission_form"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet" position="inside">
+
+                <group string="Accounting Integration">
+
+                    <group string="Customer Invoice">
+
+                        <field name="customer_invoice_id" readonly="1"/>
+
+                        <field name="customer_payment_status" readonly="1"/>
+
+                        <button
+                            name="action_create_customer_invoice"
+                            type="object"
+                            string="Create Customer Invoice"
+                            class="btn-primary"
+                            invisible="customer_invoice_id"
+                        />
+
+                        <button
+                            name="action_register_customer_payment"
+                            type="object"
+                            string="Register Payment"
+                            class="btn-secondary"
+                            invisible="not customer_invoice_id"
+                        />
+
+                        <button
+                            name="action_open_customer_invoice"
+                            type="object"
+                            string="Open Customer Invoice"
+                            class="btn-secondary"
+                            invisible="not customer_invoice_id"
+                        />
+
+                    </group>
+
+                    <group string="Agent Payable">
+
+                        <field name="agent_payable_bill_id" readonly="1"/>
+
+                        <field name="agent_bill_payment_status" readonly="1"/>
+
+                        <button
+                            name="action_create_agent_payable"
+                            type="object"
+                            string="Create Agent Payable"
+                            class="btn-primary"
+                            invisible="agent_payable_bill_id"
+                        />
+
+                        <button
+                            name="action_open_agent_payable"
+                            type="object"
+                            string="Open Agent Payable"
+                            class="btn-secondary"
+                            invisible="not agent_payable_bill_id"
+                        />
+
+                    </group>
+
+                    <group string="Developer Payable">
+
+                        <field name="developer_payable_bill_id" readonly="1"/>
+
+                        <field name="developer_bill_payment_status" readonly="1"/>
+
+                        <button
+                            name="action_create_developer_payable"
+                            type="object"
+                            string="Create Developer Payable"
+                            class="btn-primary"
+                            invisible="developer_payable_bill_id"
+                        />
+
+                        <button
+                            name="action_open_developer_payable"
+                            type="object"
+                            string="Open Developer Payable"
+                            class="btn-secondary"
+                            invisible="not developer_payable_bill_id"
+                        />
+
+                    </group>
+
+                </group>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+</odoo>

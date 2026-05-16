@@ -1,0 +1,93 @@
+<odoo>
+    <record id="view_tz_site_visit_tree" model="ir.ui.view">
+        <field name="name">tz.site.visit.tree</field>
+        <field name="model">tz.site.visit</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="visit_datetime"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="property_unit_id"/>
+                <field name="area"/>
+                <field name="sale_price"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_site_visit_form" model="ir.ui.view">
+        <field name="name">tz.site.visit.form</field>
+        <field name="model">tz.site.visit</field>
+        <field name="arch" type="xml">
+            <form string="Site Visit">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="lead_id"/>
+                            <field name="customer_id"/>
+                            <field name="agent_id"/>
+                            <field name="visit_datetime"/>
+                        </group>
+
+                        <group>
+                            <field name="property_unit_id"/>
+                            <field name="property_type" readonly="1"/>
+                            <field name="area" readonly="1"/>
+                            <field name="sale_price" readonly="1"/>
+                            <field name="status"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Feedback">
+                            <field name="feedback"/>
+                        </page>
+
+                        <page string="Next Action">
+                            <field name="next_action"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tz_site_visit_search" model="ir.ui.view">
+        <field name="name">tz.site.visit.search</field>
+        <field name="model">tz.site.visit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="property_unit_id"/>
+                <field name="area"/>
+
+                <filter string="Scheduled" name="scheduled" domain="[('status','=','scheduled')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('status','=','confirmed')]"/>
+                <filter string="Completed" name="completed" domain="[('status','=','completed')]"/>
+                <filter string="Interested" name="interested" domain="[('status','=','interested')]"/>
+                <filter string="Negotiation" name="negotiation" domain="[('status','=','negotiation')]"/>
+                <filter string="Lost" name="lost" domain="[('status','=','lost')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Agent" name="group_agent" context="{'group_by':'agent_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'status'}"/>
+                    <filter string="Area" name="group_area" context="{'group_by':'area'}"/>
+                    <filter string="Visit Date" name="group_visit_date" context="{'group_by':'visit_datetime'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tz_site_visit" model="ir.actions.act_window">
+        <field name="name">Site Visits</field>
+        <field name="res_model">tz.site.visit</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_tz_site_visit_search"/>
+    </record>
+</odoo>

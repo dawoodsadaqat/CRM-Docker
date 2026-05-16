@@ -1,0 +1,59 @@
+<odoo>
+    <record id="view_tz_api_log_tree" model="ir.ui.view">
+        <field name="name">tz.api.log.tree</field>
+        <field name="model">tz.api.log</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="endpoint"/>
+                <field name="api_key_name"/>
+                <field name="status"/>
+                <field name="http_status"/>
+                <field name="lead_id"/>
+                <field name="error_message"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_api_log_form" model="ir.ui.view">
+        <field name="name">tz.api.log.form</field>
+        <field name="model">tz.api.log</field>
+        <field name="arch" type="xml">
+            <form string="API Log">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="endpoint"/>
+                        <field name="api_key_name"/>
+                        <field name="status"/>
+                        <field name="http_status"/>
+                        <field name="lead_id"/>
+                        <field name="error_message"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Request Payload">
+                            <field name="request_payload"/>
+                        </page>
+                        <page string="Response Payload">
+                            <field name="response_payload"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_api_log" model="ir.actions.act_window">
+        <field name="name">API Logs</field>
+        <field name="res_model">tz.api.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tz_api_logs"
+              name="API Logs"
+              parent="crm.crm_menu_config"
+              action="action_tz_api_log"
+              sequence="95"/>
+</odoo>

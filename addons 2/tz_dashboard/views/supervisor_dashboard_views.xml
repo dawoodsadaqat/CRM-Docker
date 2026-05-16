@@ -1,0 +1,114 @@
+<odoo>
+    <record id="view_tz_supervisor_dashboard_tree" model="ir.ui.view">
+        <field name="name">tz.supervisor.dashboard.tree</field>
+        <field name="model">tz.supervisor.dashboard</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="supervisor_id"/>
+                <field name="total_agent_reminders"/>
+                <field name="overdue_reminders"/>
+                <field name="sla_breached_leads"/>
+                <field name="stuck_leads"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_supervisor_dashboard_form" model="ir.ui.view">
+        <field name="name">tz.supervisor.dashboard.form</field>
+        <field name="model">tz.supervisor.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Team Control Panel">
+                <header>
+                    <button name="action_refresh_dashboard"
+                            string="Refresh"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="supervisor_id"/>
+                    </group>
+
+                    <group string="Filters">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+
+                    <group string="Agents Under Supervisor">
+                        <field name="agent_ids" widget="many2many_tags" readonly="1"/>
+                    </group>
+
+                    <separator string="Operational Alerts"/>
+
+                    <div class="alert alert-danger" role="alert" invisible="overdue_reminders == 0">
+                        <strong>Urgent:</strong> There are overdue follow-up reminders.
+                    </div>
+
+                    <div class="alert alert-warning" role="alert" invisible="sla_breached_leads == 0">
+                        <strong>SLA Warning:</strong> Some leads have breached response SLA.
+                    </div>
+
+                    <div class="alert alert-info" role="alert" invisible="stuck_leads == 0">
+                        <strong>Attention:</strong> Some leads are stuck and need manager review.
+                    </div>
+
+                    <separator string="Team Metrics"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_agent_reminders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-bell">
+                            <field name="total_agent_reminders"
+                                   widget="statinfo"
+                                   string="Agent Reminders"/>
+                        </button>
+
+                        <button name="action_open_overdue_reminders"
+                                type="object"
+                                class="oe_stat_button text-danger"
+                                icon="fa-warning">
+                            <field name="overdue_reminders"
+                                   widget="statinfo"
+                                   string="Overdue"/>
+                        </button>
+
+                        <button name="action_open_sla_breaches"
+                                type="object"
+                                class="oe_stat_button text-danger"
+                                icon="fa-clock-o">
+                            <field name="sla_breached_leads"
+                                   widget="statinfo"
+                                   string="SLA Breaches"/>
+                        </button>
+
+                        <button name="action_open_stuck_leads"
+                                type="object"
+                                class="oe_stat_button text-warning"
+                                icon="fa-chain-broken">
+                            <field name="stuck_leads"
+                                   widget="statinfo"
+                                   string="Stuck Leads"/>
+                        </button>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_supervisor_dashboard" model="ir.actions.act_window">
+        <field name="name">Team Control Panel</field>
+        <field name="res_model">tz.supervisor.dashboard</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tz_supervisor_dashboard"
+              name="Team Control Panel"
+              parent="crm.crm_menu_root"
+              action="action_tz_supervisor_dashboard"
+              groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
+              sequence="86"/>
+</odoo>

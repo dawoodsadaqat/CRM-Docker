@@ -1,0 +1,46 @@
+<odoo>
+    <record id="view_team_followup_monitor_tree" model="ir.ui.view">
+        <field name="name">team.followup.monitor.tree</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <tree string="Team Follow-up Monitor"
+                  decoration-danger="followup_status == 'overdue'"
+                  decoration-warning="sla_status == 'breached'"
+                  decoration-muted="conversion_stage in ['won', 'lost']">
+
+                <field name="name" string="Lead"/>
+                <field name="user_id" string="Agent"/>
+                <field name="next_followup_date" string="Follow-up Date"/>
+                <field name="followup_status" string="Follow-up Status"/>
+                <field name="sla_status" string="SLA Status"/>
+                <field name="conversion_stage" string="Conversion Stage"/>
+                <field name="lead_age_days"/>
+                <field name="stage_age_days"/>
+                <field name="is_stuck"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_team_followup_monitor" model="ir.actions.act_window">
+        <field name="name">Team Follow-up Monitor</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_team_followup_monitor_tree"/>
+        <field name="domain">
+            [
+                ('next_followup_date', '!=', False),
+                ('conversion_stage', 'not in', ['won', 'lost'])
+            ]
+        </field>
+        <field name="context">
+            {'search_default_group_by_agent': 1}
+        </field>
+    </record>
+
+    <menuitem id="menu_team_followup_monitor"
+              name="Team Follow-up Monitor"
+              parent="crm.crm_menu_root"
+              action="action_team_followup_monitor"
+              groups="tz_crm_base.group_tz_crm_manager,tz_crm_base.group_tz_crm_admin"
+              sequence="87"/>
+</odoo>

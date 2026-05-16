@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_tz_dashboard_root"
+              name="Dashboard"
+              parent="crm.crm_menu_root"
+              action="action_tz_crm_dashboard"
+              sequence="10"/>
+</odoo>

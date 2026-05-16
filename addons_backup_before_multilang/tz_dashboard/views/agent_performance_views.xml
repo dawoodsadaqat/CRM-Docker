@@ -1,0 +1,65 @@
+<odoo>
+    <record id="view_tz_agent_performance_tree" model="ir.ui.view">
+        <field name="name">tz.agent.performance.tree</field>
+        <field name="model">tz.agent.performance</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="agent_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_leads"/>
+                <field name="contacted_leads"/>
+                <field name="won_leads"/>
+                <field name="conversion_rate"/>
+                <field name="avg_response_time_hours"/>
+                <field name="overdue_followups"/>
+                <field name="stuck_leads"/>
+                <field name="performance_score"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_agent_performance_form" model="ir.ui.view">
+        <field name="name">tz.agent.performance.form</field>
+        <field name="model">tz.agent.performance</field>
+        <field name="arch" type="xml">
+            <form string="Agent Performance">
+                <sheet>
+                    <group string="Filters">
+                        <field name="agent_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+
+                    <group string="Performance">
+                        <group>
+                            <field name="total_leads"/>
+                            <field name="contacted_leads"/>
+                            <field name="won_leads"/>
+                            <field name="lost_leads"/>
+                            <field name="conversion_rate"/>
+                        </group>
+                        <group>
+                            <field name="avg_response_time_hours"/>
+                            <field name="overdue_followups"/>
+                            <field name="stuck_leads"/>
+                            <field name="performance_score"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_agent_performance" model="ir.actions.act_window">
+        <field name="name">Agent Performance</field>
+        <field name="res_model">tz.agent.performance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tz_agent_performance"
+              name="Agent Performance"
+              parent="crm.crm_menu_root"
+              action="action_tz_agent_performance"
+              sequence="80"/>
+</odoo>
