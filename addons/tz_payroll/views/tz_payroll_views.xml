@@ -172,14 +172,4 @@
         <field name="search_view_id" ref="view_tz_payroll_search"/>
     </record>
 
-    <menuitem id="menu_tz_payroll_root"
-              name="Payroll"
-              sequence="100"/>
-
-    <menuitem id="menu_tz_payroll"
-              name="Monthly Payrolls"
-              parent="menu_tz_payroll_root"
-              action="action_tz_payroll"
-              sequence="1"/>
-
 </odoo>

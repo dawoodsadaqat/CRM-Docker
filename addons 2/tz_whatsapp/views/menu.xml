@@ -1,7 +1,0 @@
-<odoo>
-    <menuitem id="menu_tz_whatsapp_root"
-              name="WhatsApp"
-              parent="crm.crm_menu_root"
-              action="action_tz_whatsapp_message"
-              sequence="40"/>
-</odoo>

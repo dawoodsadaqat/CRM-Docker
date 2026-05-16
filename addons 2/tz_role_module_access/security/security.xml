@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-    <record id="module_category_tz_role_access" model="ir.module.category">
-        <field name="name">Techzilla Role Access</field>
-        <field name="sequence">90</field>
-    </record>
-</odoo>

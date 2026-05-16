@@ -18,31 +18,30 @@
         <field name="view_mode">tree</field>
     </record>
 
-    <menuitem
-        id="menu_tz_live_tracking_root"
-        name="Live Tracking"
-        parent="crm.crm_menu_root"
-        sequence="80"/>
+    
 
-    <menuitem
-        id="menu_tz_my_tracking"
-        name="My Tracking"
-        parent="menu_tz_live_tracking_root"
-        action="action_tz_my_tracking"
-        sequence="1"/>
+  <menuitem
+    id="menu_tz_my_tracking"
+    name="My Tracking"
+    parent="crm.crm_menu_root"
+    action="action_tz_my_tracking"
+    sequence="95"
+/>
 
-    <menuitem
-        id="menu_tz_user_locations"
-        name="Team / User Locations"
-        parent="menu_tz_live_tracking_root"
-        action="action_tz_user_location"
-        sequence="2"/>
+<menuitem
+    id="menu_tz_user_location"
+    name="Team / User Locations"
+    parent="crm.crm_menu_root"
+    action="action_tz_user_location"
+    sequence="96"
+/>
 
-    <menuitem
-        id="menu_tz_location_history"
-        name="Location History"
-        parent="menu_tz_live_tracking_root"
-        action="action_tz_user_location_history"
-        sequence="3"/>
+<menuitem
+    id="menu_tz_user_location_history"
+    name="Location History"
+    parent="crm.crm_menu_root"
+    action="action_tz_user_location_history"
+    sequence="97"
+/>
 
 </odoo>

@@ -1,7 +1,0 @@
-<odoo>
-    <menuitem id="menu_tz_call_center_root"
-              name="Call Center"
-              parent="crm.crm_menu_root"
-              action="action_tz_call_log"
-              sequence="50"/>
-</odoo>

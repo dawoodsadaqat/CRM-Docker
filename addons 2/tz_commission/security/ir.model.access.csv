@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_tz_commission_agent,tz.commission.agent,model_tz_commission,tz_crm_base.group_tz_crm_agent,1,1,1,0
-access_tz_commission_manager,tz.commission.manager,model_tz_commission,tz_crm_base.group_tz_crm_manager,1,1,1,1
-access_tz_commission_admin,tz.commission.admin,model_tz_commission,tz_crm_base.group_tz_crm_admin,1,1,1,1
-access_tz_commission_milestone_agent,tz.commission.milestone.agent,model_tz_commission_milestone,tz_crm_base.group_tz_crm_agent,1,1,1,0
-access_tz_commission_milestone_manager,tz.commission.milestone.manager,model_tz_commission_milestone,tz_crm_base.group_tz_crm_manager,1,1,1,1
-access_tz_commission_milestone_admin,tz.commission.milestone.admin,model_tz_commission_milestone,tz_crm_base.group_tz_crm_admin,1,1,1,1
-access_tz_commission_clawback_manager,tz.commission.clawback.manager,model_tz_commission_clawback,tz_crm_base.group_tz_crm_manager,1,1,1,1
-access_tz_commission_clawback_admin,tz.commission.clawback.admin,model_tz_commission_clawback,tz_crm_base.group_tz_crm_admin,1,1,1,1

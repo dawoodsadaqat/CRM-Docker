@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_tz_module_feature_crm_admin,tz.module.feature crm admin,model_tz_module_feature,tz_crm_base.group_tz_crm_admin,1,1,1,1
-access_tz_role_module_access_crm_admin,tz.role.module.access crm admin,model_tz_role_module_access,tz_crm_base.group_tz_crm_admin,1,1,1,1

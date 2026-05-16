@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_tz_expense_extension_hr_expense_user,access.tz.expense.extension.hr.expense.user,hr_expense.model_hr_expense,base.group_user,1,1,1,0
