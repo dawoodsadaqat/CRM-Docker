@@ -44,7 +44,16 @@ class TzI18nTools(models.TransientModel):
         return {"type": "ir.actions.act_window", "name": _("Languages"), "res_model": "res.lang", "view_mode": "tree,form", "target": "current"}
 
     def action_open_translations(self):
-        return {"type": "ir.actions.act_window", "name": _("Translated Terms"), "res_model": "ir.translation", "view_mode": "tree,form", "target": "current"}
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Not Available"),
+                "message": _("Direct translated terms view is not available in Odoo 17. Use Settings > Translations > Export/Import instead."),
+                "type": "warning",
+                "sticky": False,
+            },
+        }
 
     def action_show_export_instructions(self):
         modules = ",".join(self._get_custom_modules())
