@@ -74,6 +74,7 @@
         id="menu_mobile_crm_root"
         name="Mobile CRM"
         sequence="5"
+        active="False"
     />
 
     <menuitem
