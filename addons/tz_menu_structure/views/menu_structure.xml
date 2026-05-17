@@ -100,5 +100,7 @@
               parent="hr.menu_hr_root"
               action="action_tz_menu_attendance"
               sequence="50"/>
-
+<record id="menu_tz_accounting_invoicing" model="ir.ui.menu">
+    <field name="active" eval="False"/>
+</record>
 </odoo>
