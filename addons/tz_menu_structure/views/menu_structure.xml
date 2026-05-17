@@ -83,11 +83,7 @@
               action="action_tz_payroll_lines_menu"
               sequence="20"/>
 
-    <menuitem id="menu_tz_crm_live_tracking"
-              name="Live Tracking"
-              parent="crm.crm_menu_root"
-              action="tz_live_tracking.action_tz_my_tracking"
-              sequence="95"/>
+    
 
     <record id="action_tz_menu_attendance" model="ir.actions.act_window">
         <field name="name">Attendance</field>

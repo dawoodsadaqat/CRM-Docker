@@ -21,27 +21,32 @@
     
 
   <menuitem
+    id="menu_tz_live_tracking_root"
+    name="Live Tracking"
+    parent="crm.crm_menu_root"
+    sequence="90"/>
+
+<menuitem
     id="menu_tz_my_tracking"
     name="My Tracking"
-    parent="crm.crm_menu_root"
+    parent="menu_tz_live_tracking_root"
     action="action_tz_my_tracking"
-    sequence="95"
+    sequence="10"
 />
 
 <menuitem
     id="menu_tz_user_location"
     name="Team / User Locations"
-    parent="crm.crm_menu_root"
+    parent="menu_tz_live_tracking_root"
     action="action_tz_user_location"
-    sequence="96"
+    sequence="20"
 />
 
 <menuitem
     id="menu_tz_user_location_history"
     name="Location History"
-    parent="crm.crm_menu_root"
+    parent="menu_tz_live_tracking_root"
     action="action_tz_user_location_history"
-    sequence="97"
+    sequence="30"
 />
-
 </odoo>
