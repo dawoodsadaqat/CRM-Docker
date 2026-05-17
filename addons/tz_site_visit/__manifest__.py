@@ -13,9 +13,9 @@
     ],
     "data": [
         "security/ir.model.access.csv",
-    "data/sequence.xml",
-    "views/site_visit_views.xml",
-    "views/crm_lead_views.xml",
+        "data/sequence.xml",
+        "views/site_visit_views.xml",
+        "views/crm_lead_views.xml",
     ],
     "installable": True,
     "application": False,
