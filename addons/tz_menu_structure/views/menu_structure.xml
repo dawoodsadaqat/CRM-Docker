@@ -135,10 +135,10 @@
 
      <!-- CRM missing menus -->
 
-<record id="action_tz_menu_site_visits" model="ir.actions.act_window">
+<!-- <record id="action_tz_menu_site_visits" model="ir.actions.act_window">
     <field name="name">Site Visits</field>
     <field name="res_model">tz.site.visit</field>
-    <field name="view_mode">tree,form,calendar</field>
+   <field name="view_mode">tree,form</field>
 </record>
 
 
@@ -147,10 +147,14 @@
           name="Site Visits"
           parent="crm.crm_menu_root"
           action="action_tz_menu_site_visits"
-          sequence="70"/>
+          sequence="70"/> -->
 
 
-
+<menuitem id="menu_tz_crm_live_tracking"
+          name="Live Tracking"
+          parent="crm.crm_menu_root"
+          action="tz_live_tracking.action_tz_my_tracking"
+          sequence="95"/>
 <!-- Employees missing menus -->
 
 <record id="action_tz_menu_attendance" model="ir.actions.act_window">

@@ -46,6 +46,13 @@ class TzPropertyUnit(models.Model):
         ("land", "Land"),
     ], string="Property Type", required=True)
 
+    vat_treatment = fields.Selection([
+        ("standard_5", "Standard Rated 5%"),
+        ("zero_rated", "Zero Rated"),
+        ("exempt", "Exempt"),
+        ("out_of_scope", "Out of Scope"),
+    ], string="VAT Treatment", default="standard_5", required=True)
+
     bedrooms = fields.Selection([
         ("studio", "Studio"),
         ("1", "1 Bedroom"),
@@ -102,3 +109,13 @@ class TzPropertyUnit(models.Model):
         for unit in self:
             if unit.project_id:
                 unit.area = unit.project_id.area
+
+    @api.onchange("property_type")
+    def _onchange_property_type_vat_treatment(self):
+        for unit in self:
+            if unit.property_type in ("office", "retail"):
+                unit.vat_treatment = "standard_5"
+            elif unit.property_type in ("apartment", "villa", "townhouse"):
+                unit.vat_treatment = "exempt"
+            elif unit.property_type == "land":
+                unit.vat_treatment = "out_of_scope"

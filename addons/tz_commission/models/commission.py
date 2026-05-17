@@ -366,7 +366,7 @@ class TzCommission(models.Model):
             or self.env.user.has_group("tz_crm_base.group_tz_crm_admin")
             or self.env.user.has_group("base.group_system")
         ):
-            raise UserError("Only Manager/Admin can perform this action.")
+            raise UserError(_("Only Manager/Admin can perform this action."))
 
     # =====================================================
     # ACTIONS
@@ -382,14 +382,14 @@ class TzCommission(models.Model):
         self._check_manager_or_admin()
         for rec in self:
             if rec.approval_status != "submitted":
-                raise UserError("Only submitted commissions can be approved.")
+                raise UserError(_("Only submitted commissions can be approved."))
             rec.approval_status = "approved"
 
     def action_reject(self):
         self._check_manager_or_admin()
         for rec in self:
             if rec.approval_status != "submitted":
-                raise UserError("Only submitted commissions can be rejected.")
+                raise UserError(_("Only submitted commissions can be rejected."))
             rec.approval_status = "rejected"
 
     def action_reset_to_draft(self):
@@ -406,7 +406,7 @@ class TzCommission(models.Model):
         self._check_manager_or_admin()
         for rec in self:
             if rec.approval_status != "approved":
-                raise UserError("Only approved commissions can be closed.")
+                raise UserError(_("Only approved commissions can be closed."))
             rec.approval_status = "closed"
 
 

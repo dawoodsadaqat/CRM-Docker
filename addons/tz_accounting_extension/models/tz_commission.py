@@ -44,6 +44,10 @@ class TzCommission(models.Model):
         readonly=True,
     )
 
+    # ---------------------------------------------------------
+    # ACCOUNT HELPERS
+    # ---------------------------------------------------------
+
     def _get_income_account(self):
         account = self.env["account.account"].search([
             ("account_type", "=", "income"),
@@ -67,6 +71,42 @@ class TzCommission(models.Model):
             raise UserError(_("No expense account found."))
 
         return account
+
+    def _get_uae_output_vat_tax(self):
+        self.ensure_one()
+
+        tax = self.env["account.tax"].search([
+            ("type_tax_use", "=", "sale"),
+            ("amount", "=", 5),
+            ("amount_type", "=", "percent"),
+            ("company_id", "=", self.company_id.id),
+            ("active", "=", True),
+            ("name", "=", "5% DB"),
+        ], limit=1)
+
+        if not tax:
+            tax = self.env["account.tax"].search([
+                ("type_tax_use", "=", "sale"),
+                ("amount", "=", 5),
+                ("amount_type", "=", "percent"),
+                ("company_id", "=", self.company_id.id),
+                ("active", "=", True),
+                ("name", "not ilike", "R C"),
+                ("name", "not ilike", "Reverse"),
+            ], limit=1)
+
+        if not tax:
+            raise UserError(_(
+                "UAE 5% Output VAT tax is not configured for this company. "
+                "Expected normal sales VAT such as '5% DB'. "
+                "Do not use reverse-charge VAT for customer commission invoices."
+            ))
+
+        return tax
+
+    # ---------------------------------------------------------
+    # PARTNER HELPERS
+    # ---------------------------------------------------------
 
     def _get_customer_partner(self):
         self.ensure_one()
@@ -105,25 +145,25 @@ class TzCommission(models.Model):
 
         raise UserError(_("Developer missing on property unit."))
 
-    def action_create_customer_invoice(self):
+    # ---------------------------------------------------------
+    # CUSTOMER INVOICE
+    # ---------------------------------------------------------
 
+    def action_create_customer_invoice(self):
         income_account = self._get_income_account()
 
         for rec in self:
-
             if rec.customer_invoice_id:
                 raise UserError(_("Customer invoice already exists."))
 
             partner = rec._get_customer_partner()
 
-            amount = (
-                rec.total_receivable_amount
-                or rec.agency_commission_amount
-                or 0.0
-            )
+            amount = rec.agency_commission_amount or 0.0
 
             if amount <= 0:
-                raise UserError(_("Invoice amount must be greater than zero."))
+                raise UserError(_("Agency commission amount must be greater than zero."))
+
+            vat_tax = rec._get_uae_output_vat_tax() if rec.vat_applicable else False
 
             move = self.env["account.move"].create({
                 "move_type": "out_invoice",
@@ -133,21 +173,21 @@ class TzCommission(models.Model):
                 "tz_lead_id": rec.lead_id.id if rec.lead_id else False,
                 "tz_property_unit_id": rec.property_unit_id.id if rec.property_unit_id else False,
                 "tz_move_purpose": "customer_invoice",
-
                 "invoice_line_ids": [(0, 0, {
-                    "name": "Real Estate Agency Commission",
+                    "name": _("Real Estate Agency Commission"),
                     "quantity": 1,
                     "price_unit": amount,
                     "account_id": income_account.id,
+                    "tax_ids": [(6, 0, [vat_tax.id])] if vat_tax else False,
                 })],
             })
 
             rec.customer_invoice_id = move.id
+            rec.customer_invoice_ref = move.name or move.ref or ""
 
         return True
 
     def action_register_customer_payment(self):
-
         self.ensure_one()
 
         if not self.customer_invoice_id:
@@ -155,7 +195,7 @@ class TzCommission(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": "Register Payment",
+            "name": _("Register Payment"),
             "res_model": "account.payment.register",
             "view_mode": "form",
             "target": "new",
@@ -165,12 +205,14 @@ class TzCommission(models.Model):
             },
         }
 
-    def action_create_agent_payable(self):
+    # ---------------------------------------------------------
+    # AGENT PAYABLE
+    # ---------------------------------------------------------
 
+    def action_create_agent_payable(self):
         expense_account = self._get_expense_account()
 
         for rec in self:
-
             if rec.agent_payable_bill_id:
                 raise UserError(_("Agent payable already exists."))
 
@@ -189,9 +231,8 @@ class TzCommission(models.Model):
                 "tz_lead_id": rec.lead_id.id if rec.lead_id else False,
                 "tz_property_unit_id": rec.property_unit_id.id if rec.property_unit_id else False,
                 "tz_move_purpose": "agent_payable",
-
                 "invoice_line_ids": [(0, 0, {
-                    "name": "Agent Commission Payable",
+                    "name": _("Agent Commission Payable"),
                     "quantity": 1,
                     "price_unit": amount,
                     "account_id": expense_account.id,
@@ -202,12 +243,14 @@ class TzCommission(models.Model):
 
         return True
 
-    def action_create_developer_payable(self):
+    # ---------------------------------------------------------
+    # DEVELOPER PAYABLE
+    # ---------------------------------------------------------
 
+    def action_create_developer_payable(self):
         expense_account = self._get_expense_account()
 
         for rec in self:
-
             if rec.developer_payable_bill_id:
                 raise UserError(_("Developer payable already exists."))
 
@@ -226,9 +269,8 @@ class TzCommission(models.Model):
                 "tz_lead_id": rec.lead_id.id if rec.lead_id else False,
                 "tz_property_unit_id": rec.property_unit_id.id if rec.property_unit_id else False,
                 "tz_move_purpose": "developer_payable",
-
                 "invoice_line_ids": [(0, 0, {
-                    "name": "Developer Payout Payable",
+                    "name": _("Developer Payout Payable"),
                     "quantity": 1,
                     "price_unit": amount,
                     "account_id": expense_account.id,
@@ -239,12 +281,19 @@ class TzCommission(models.Model):
 
         return True
 
-    def action_open_customer_invoice(self):
+    # ---------------------------------------------------------
+    # OPEN ACTIONS
+    # ---------------------------------------------------------
 
+    def action_open_customer_invoice(self):
         self.ensure_one()
+
+        if not self.customer_invoice_id:
+            raise UserError(_("Customer invoice not found."))
 
         return {
             "type": "ir.actions.act_window",
+            "name": _("Customer Invoice"),
             "res_model": "account.move",
             "view_mode": "form",
             "res_id": self.customer_invoice_id.id,
@@ -252,11 +301,14 @@ class TzCommission(models.Model):
         }
 
     def action_open_agent_payable(self):
-
         self.ensure_one()
+
+        if not self.agent_payable_bill_id:
+            raise UserError(_("Agent payable not found."))
 
         return {
             "type": "ir.actions.act_window",
+            "name": _("Agent Payable"),
             "res_model": "account.move",
             "view_mode": "form",
             "res_id": self.agent_payable_bill_id.id,
@@ -264,11 +316,14 @@ class TzCommission(models.Model):
         }
 
     def action_open_developer_payable(self):
-
         self.ensure_one()
+
+        if not self.developer_payable_bill_id:
+            raise UserError(_("Developer payable not found."))
 
         return {
             "type": "ir.actions.act_window",
+            "name": _("Developer Payable"),
             "res_model": "account.move",
             "view_mode": "form",
             "res_id": self.developer_payable_bill_id.id,

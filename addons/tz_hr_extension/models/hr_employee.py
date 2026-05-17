@@ -94,7 +94,7 @@ class HrEmployee(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": "CRM User Synced",
-                "message": "CRM user has been created/linked. Use Open User Settings to configure access rights.",
+                "message": _("CRM user has been created/linked. Use Open User Settings to configure access rights."),
                 "type": "success",
                 "sticky": False,
             },

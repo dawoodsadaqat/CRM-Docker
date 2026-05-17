@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import _, models, fields
 from odoo.exceptions import UserError
 
 
@@ -26,7 +26,7 @@ class CrmLead(models.Model):
         phone = self.phone or self.mobile
 
         if not phone:
-            raise UserError("No phone number available on this lead.")
+            raise UserError(_("No phone number available on this lead."))
 
         return (
             phone.replace(" ", "")
@@ -54,7 +54,7 @@ class CrmLead(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": "Call Logs",
+            "name": _("Call Logs"),
             "res_model": "tz.call.log",
             "view_mode": "tree,form",
             "domain": [("lead_id", "=", self.id)],
@@ -73,7 +73,7 @@ class CrmLead(models.Model):
 
         self._create_call_log(
             phone=phone,
-            notes="Manual call initiated from CRM header button."
+            notes=_("Manual call initiated from CRM header button.")
         )
 
         return {
@@ -92,7 +92,7 @@ class CrmLead(models.Model):
 
         self._create_call_log(
             phone=phone,
-            notes="WhatsApp chat initiated from CRM."
+            notes=_("WhatsApp chat initiated from CRM.")
         )
 
         return {
@@ -109,7 +109,7 @@ class CrmLead(models.Model):
 
         self._create_call_log(
             phone=phone,
-            notes="WhatsApp call attempt initiated from CRM."
+            notes=_("WhatsApp call attempt initiated from CRM.")
         )
 
         return {

@@ -1,4 +1,4 @@
-from odoo import http, fields
+from odoo import _, http, fields
 from odoo.http import request
 import logging
 
@@ -80,7 +80,7 @@ class TzLiveTrackingController(http.Controller):
 
         return {
             "success": True,
-            "message": "Location updated",
+            "message": _("Location updated"),
         }
 
     @http.route(
@@ -105,5 +105,5 @@ class TzLiveTrackingController(http.Controller):
 
         return {
             "success": True,
-            "message": "Tracking stopped",
+            "message": _("Tracking stopped"),
         }

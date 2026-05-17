@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -142,10 +142,9 @@ class TzLeadRoutingRule(models.Model):
 
             return {
                 "warning": {
-                    "title": "Assignment Updated",
+                    "title": _("Assignment Updated"),
                     "message": (
-                        "Only one routing target is allowed. "
-                        "Agent was cleared because Supervisor is selected."
+                        _("Only one routing target is allowed. Agent was cleared because Supervisor is selected.")
                     ),
                 }
             }
@@ -157,10 +156,9 @@ class TzLeadRoutingRule(models.Model):
 
             return {
                 "warning": {
-                    "title": "Assignment Updated",
+                    "title": _("Assignment Updated"),
                     "message": (
-                        "Only one routing target is allowed. "
-                        "Supervisor was cleared because Agent is selected."
+                        _("Only one routing target is allowed. Supervisor was cleared because Agent is selected.")
                     ),
                 }
             }
@@ -173,9 +171,7 @@ class TzLeadRoutingRule(models.Model):
     def _check_only_one_assignment_target(self):
         for rec in self:
             if rec.assign_supervisor_id and rec.assign_agent_id:
-                raise ValidationError(
-                    "Select either Assign Supervisor or Assign Agent, not both."
-                )
+                raise ValidationError(_("Select either Assign Supervisor or Assign Agent, not both."))
 
     # =====================================================
     # ROLE VALIDATION
@@ -189,21 +185,15 @@ class TzLeadRoutingRule(models.Model):
                 if not rec.assign_supervisor_id.has_group(
                     "tz_crm_base.group_tz_crm_manager"
                 ):
-                    raise ValidationError(
-                        "Assign Supervisor must be a CRM Manager."
-                    )
+                    raise ValidationError(_("Assign Supervisor must be a CRM Manager."))
 
             if rec.assign_agent_id:
                 if not rec.assign_agent_id.has_group(
                     "tz_crm_base.group_tz_crm_agent"
                 ):
-                    raise ValidationError(
-                        "Assign Agent must be a CRM Agent."
-                    )
+                    raise ValidationError(_("Assign Agent must be a CRM Agent."))
 
                 if rec.assign_agent_id.has_group(
                     "tz_crm_base.group_tz_crm_manager"
                 ):
-                    raise ValidationError(
-                        "Assign Agent cannot be a CRM Manager."
-                    )
+                    raise ValidationError(_("Assign Agent cannot be a CRM Manager."))

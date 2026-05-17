@@ -98,7 +98,7 @@ class HrExpense(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": "Submitted",
-                "message": "Expense submitted to supervisor.",
+                "message": _("Expense submitted to supervisor."),
                 "type": "success",
                 "sticky": False,
             },
@@ -114,7 +114,7 @@ class HrExpense(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": "Approved",
-                "message": "Expense approved by supervisor. Accounting can now reimburse.",
+                "message": _("Expense approved by supervisor. Accounting can now reimburse."),
                 "type": "success",
                 "sticky": False,
             },
@@ -129,7 +129,7 @@ class HrExpense(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": "Rejected",
-                "message": "Expense rejected by supervisor.",
+                "message": _("Expense rejected by supervisor."),
                 "type": "warning",
                 "sticky": False,
             },

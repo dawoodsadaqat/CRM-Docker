@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -82,8 +82,8 @@ class TzLeadConfig(models.Model):
             self.default_agent_id = False
             return {
                 "warning": {
-                    "title": "Assignment Updated",
-                    "message": "Only one routing target is allowed. Agent was cleared because Supervisor is now selected.",
+                    "title": _("Assignment Updated"),
+                    "message": _("Only one routing target is allowed. Agent was cleared because Supervisor is now selected."),
                 }
             }
 
@@ -93,8 +93,8 @@ class TzLeadConfig(models.Model):
             self.default_supervisor_id = False
             return {
                 "warning": {
-                    "title": "Assignment Updated",
-                    "message": "Only one routing target is allowed. Supervisor was cleared because Agent is now selected.",
+                    "title": _("Assignment Updated"),
+                    "message": _("Only one routing target is allowed. Supervisor was cleared because Agent is now selected."),
                 }
             }
 
@@ -102,20 +102,20 @@ class TzLeadConfig(models.Model):
     def _check_only_one_assignment_target(self):
         for rec in self:
             if rec.default_supervisor_id and rec.default_agent_id:
-                raise ValidationError("Select either Default Supervisor or Default Agent, not both.")
+                raise ValidationError(_("Select either Default Supervisor or Default Agent, not both."))
 
     @api.constrains("default_supervisor_id", "default_agent_id")
     def _check_user_roles(self):
         for rec in self:
             if rec.default_supervisor_id and not rec.default_supervisor_id.has_group("tz_crm_base.group_tz_crm_manager"):
-                raise ValidationError("Default Supervisor must be a CRM Manager.")
+                raise ValidationError(_("Default Supervisor must be a CRM Manager."))
 
             if rec.default_agent_id:
                 if not rec.default_agent_id.has_group("tz_crm_base.group_tz_crm_agent"):
-                    raise ValidationError("Default Agent must be a CRM Agent.")
+                    raise ValidationError(_("Default Agent must be a CRM Agent."))
 
                 if rec.default_agent_id.has_group("tz_crm_base.group_tz_crm_manager"):
-                    raise ValidationError("Default Agent cannot be a CRM Manager.")
+                    raise ValidationError(_("Default Agent cannot be a CRM Manager."))
 
 
 class TzLeadIntegration(models.Model):
