@@ -1,51 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- =====================================================
-         USE EXISTING CRM ROOT
-         Do not create duplicate CRM root.
-    ====================================================== -->
-
     <record id="crm.crm_menu_root" model="ir.ui.menu">
         <field name="name">CRM</field>
         <field name="sequence">10</field>
         <field name="active" eval="True"/>
     </record>
 
-
-    <!-- =====================================================
-         USE EXISTING HR ROOT AS EMPLOYEES
-         Do not create duplicate Employees root.
-    ====================================================== -->
-
     <record id="hr.menu_hr_root" model="ir.ui.menu">
         <field name="name">Employees</field>
         <field name="sequence">20</field>
         <field name="active" eval="True"/>
     </record>
-
-
-    <!-- =====================================================
-         ACCOUNTING ROOT
-    ====================================================== -->
-
-    <!-- <menuitem id="menu_tz_main_accounting"
-              name="Accounting"
-              sequence="30"/> -->
-
-
-    <!-- =====================================================
-         PAYROLL ROOT
-    ====================================================== -->
-
-    <menuitem id="menu_tz_main_payroll"
-              name="Payroll"
-              sequence="40"/>
-
-
-    <!-- =====================================================
-         ACCOUNTING ACTIONS
-    ====================================================== -->
 
     <record id="action_tz_customer_invoices" model="ir.actions.act_window">
         <field name="name">Customer Invoices</field>
@@ -71,30 +37,6 @@
         <field name="context">{}</field>
     </record>
 
-
-    <!-- =====================================================
-         PAYROLL ACTIONS
-    ====================================================== -->
-
-    <record id="action_tz_payroll_batches_menu" model="ir.actions.act_window">
-        <field name="name">Payroll Batches</field>
-        <field name="res_model">tz.payroll</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
-    </record>
-
-    <record id="action_tz_payroll_lines_menu" model="ir.actions.act_window">
-        <field name="name">Payroll Lines</field>
-        <field name="res_model">tz.payroll.line</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
-    </record>
-
-
-    <!-- =====================================================
-         ACCOUNTING MENUS
-    ====================================================== -->
-
     <menuitem id="menu_tz_customer_invoices"
               name="Customer Invoices"
               parent="account.menu_finance"
@@ -113,13 +55,21 @@
               action="action_tz_commission_invoices"
               sequence="30"/>
 
-    <!-- Standard Odoo Invoicing under Accounting -->
-    
+    <menuitem id="menu_tz_main_payroll"
+              name="Payroll"
+              sequence="40"/>
 
+    <record id="action_tz_payroll_batches_menu" model="ir.actions.act_window">
+        <field name="name">Payroll Batches</field>
+        <field name="res_model">tz.payroll</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
-    <!-- =====================================================
-         PAYROLL MENUS
-    ====================================================== -->
+    <record id="action_tz_payroll_lines_menu" model="ir.actions.act_window">
+        <field name="name">Payroll Lines</field>
+        <field name="res_model">tz.payroll.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
     <menuitem id="menu_tz_payroll_batches"
               name="Payroll Batches"
@@ -133,69 +83,22 @@
               action="action_tz_payroll_lines_menu"
               sequence="20"/>
 
-     <!-- CRM missing menus -->
+    <menuitem id="menu_tz_crm_live_tracking"
+              name="Live Tracking"
+              parent="crm.crm_menu_root"
+              action="tz_live_tracking.action_tz_my_tracking"
+              sequence="95"/>
 
-<!-- <record id="action_tz_menu_site_visits" model="ir.actions.act_window">
-    <field name="name">Site Visits</field>
-    <field name="res_model">tz.site.visit</field>
-   <field name="view_mode">tree,form</field>
-</record>
+    <record id="action_tz_menu_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+    </record>
 
-
-
-<menuitem id="menu_tz_crm_site_visits"
-          name="Site Visits"
-          parent="crm.crm_menu_root"
-          action="action_tz_menu_site_visits"
-          sequence="70"/> -->
-
-
-<menuitem id="menu_tz_crm_live_tracking"
-          name="Live Tracking"
-          parent="crm.crm_menu_root"
-          action="tz_live_tracking.action_tz_my_tracking"
-          sequence="95"/>
-<!-- Employees missing menus -->
-
-<record id="action_tz_menu_attendance" model="ir.actions.act_window">
-    <field name="name">Attendance</field>
-    <field name="res_model">hr.attendance</field>
-    <field name="view_mode">tree,form,pivot,graph</field>
-</record>
-
-<record id="action_tz_menu_expenses" model="ir.actions.act_window">
-    <field name="name">Expenses</field>
-    <field name="res_model">hr.expense</field>
-    <field name="view_mode">tree,kanban,form,pivot,graph</field>
-</record>
-
-<menuitem id="menu_tz_employees_attendance"
-          name="Attendance"
-          parent="hr.menu_hr_root"
-          action="action_tz_menu_attendance"
-          sequence="50"/>
-
-<menuitem id="menu_tz_accounting_expenses"
-          name="Expenses"
-          parent="menu_tz_main_accounting"
-          action="action_tz_menu_expenses"
-          sequence="50"/>
-
-
-<!-- Accounting Invoicing replacement -->
-
-<!-- <record id="action_tz_menu_invoicing" model="ir.actions.act_window"> -->
-    <!-- <field name="name">Invoicing</field>
-    <field name="res_model">account.move</field>
-    <field name="view_mode">tree,kanban,form</field>
-    <field name="domain">[('move_type', 'in', ['out_invoice', 'out_refund'])]</field>
-    <field name="context">{'default_move_type': 'out_invoice'}</field>
-</record> -->
-
-<!-- <menuitem id="menu_tz_accounting_invoicing"
-          name="Invoicing"
-          parent="menu_tz_main_accounting"
-          action="action_tz_menu_invoicing"
-          sequence="40"/>          -->
+    <menuitem id="menu_tz_employees_attendance"
+              name="Attendance"
+              parent="hr.menu_hr_root"
+              action="action_tz_menu_attendance"
+              sequence="50"/>
 
 </odoo>
