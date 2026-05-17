@@ -29,9 +29,9 @@
          ACCOUNTING ROOT
     ====================================================== -->
 
-    <menuitem id="menu_tz_main_accounting"
+    <!-- <menuitem id="menu_tz_main_accounting"
               name="Accounting"
-              sequence="30"/>
+              sequence="30"/> -->
 
 
     <!-- =====================================================
@@ -97,19 +97,19 @@
 
     <menuitem id="menu_tz_customer_invoices"
               name="Customer Invoices"
-              parent="menu_tz_main_accounting"
+              parent="account.menu_finance"
               action="action_tz_customer_invoices"
               sequence="10"/>
 
     <menuitem id="menu_tz_vendor_bills"
               name="Vendor Bills"
-              parent="menu_tz_main_accounting"
+              parent="account.menu_finance"
               action="action_tz_vendor_bills"
               sequence="20"/>
 
     <menuitem id="menu_tz_commission_invoices"
               name="Commission Invoices"
-              parent="menu_tz_main_accounting"
+              parent="account.menu_finance"
               action="action_tz_commission_invoices"
               sequence="30"/>
 
@@ -185,12 +185,12 @@
 <!-- Accounting Invoicing replacement -->
 
 <!-- <record id="action_tz_menu_invoicing" model="ir.actions.act_window"> -->
-    <field name="name">Invoicing</field>
+    <!-- <field name="name">Invoicing</field>
     <field name="res_model">account.move</field>
     <field name="view_mode">tree,kanban,form</field>
     <field name="domain">[('move_type', 'in', ['out_invoice', 'out_refund'])]</field>
     <field name="context">{'default_move_type': 'out_invoice'}</field>
-</record>
+</record> -->
 
 <!-- <menuitem id="menu_tz_accounting_invoicing"
           name="Invoicing"
