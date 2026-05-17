@@ -184,7 +184,7 @@
 
 <!-- Accounting Invoicing replacement -->
 
-<record id="action_tz_menu_invoicing" model="ir.actions.act_window">
+<!-- <record id="action_tz_menu_invoicing" model="ir.actions.act_window"> -->
     <field name="name">Invoicing</field>
     <field name="res_model">account.move</field>
     <field name="view_mode">tree,kanban,form</field>
@@ -192,10 +192,10 @@
     <field name="context">{'default_move_type': 'out_invoice'}</field>
 </record>
 
-<menuitem id="menu_tz_accounting_invoicing"
+<!-- <menuitem id="menu_tz_accounting_invoicing"
           name="Invoicing"
           parent="menu_tz_main_accounting"
           action="action_tz_menu_invoicing"
-          sequence="40"/>         
+          sequence="40"/>          -->
 
 </odoo>
