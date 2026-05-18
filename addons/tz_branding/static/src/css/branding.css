@@ -1,0 +1,34 @@
+:root {
+    --o-brand-primary: #6f5fa8;
+    --o-brand-secondary: #2f2f2f;
+}
+
+/* Backend navbar */
+.o_main_navbar {
+    background-color: #6f5fa8 !important;
+    border-bottom: 1px solid #5a4b8f !important;
+}
+
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .dropdown-toggle {
+    color: #ffffff !important;
+}
+
+/* Login page */
+.oe_login_form,
+.o_database_list {
+    border-radius: 12px;
+}
+
+body.o_web_client,
+.o_web_client {
+    background-color: #f7f7f7;
+}
+
+/* Hide visible Odoo footer/powered text where present */
+.o_footer_copyright_name,
+.o_powered_by,
+a[href*="odoo.com"] {
+    display: none !important;
+}
