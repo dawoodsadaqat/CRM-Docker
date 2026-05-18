@@ -5,26 +5,24 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form" position="inside">
-                <app string="Accounting" name="account">
-                    <block title="UAE VAT Compliance" name="tz_uae_vat_compliance_block">
-                        <setting string="Enforce UAE VAT Compliance" help="Enable strict VAT compliance checks for commission customer invoices.">
-                            <field name="tz_enforce_uae_vat_compliance"/>
-                        </setting>
-                        <setting string="Standard Rated Tax" help="Sales tax to use for standard rated (5%) treatment.">
-                            <field name="tz_uae_vat_standard_tax_id" options="{'no_create_edit': True}"/>
-                        </setting>
-                        <setting string="Zero Rated Tax" help="Sales tax to use for zero-rated treatment.">
-                            <field name="tz_uae_vat_zero_tax_id" options="{'no_create_edit': True}"/>
-                        </setting>
-                        <setting string="Exempt Tax" help="Sales tax to use for exempt treatment (optional).">
-                            <field name="tz_uae_vat_exempt_tax_id" options="{'no_create_edit': True}"/>
-                        </setting>
-                        <setting string="Out-of-Scope Tax" help="Sales tax to use for out-of-scope treatment (optional).">
-                            <field name="tz_uae_vat_out_scope_tax_id" options="{'no_create_edit': True}"/>
-                        </setting>
-                    </block>
-                </app>
+            <xpath expr="//app[@name='account']" position="inside">
+                <block title="UAE VAT Compliance" name="tz_uae_vat_compliance_block">
+                    <setting string="Enforce UAE VAT Compliance" help="Enable strict VAT compliance checks for commission customer invoices.">
+                        <field name="tz_enforce_uae_vat_compliance"/>
+                    </setting>
+                    <setting string="Standard Rated Tax" help="Sales tax to use for standard rated (5%) treatment.">
+                        <field name="tz_uae_vat_standard_tax_id" options="{'no_create_edit': True}"/>
+                    </setting>
+                    <setting string="Zero Rated Tax" help="Sales tax to use for zero-rated treatment.">
+                        <field name="tz_uae_vat_zero_tax_id" options="{'no_create_edit': True}"/>
+                    </setting>
+                    <setting string="Exempt Tax" help="Sales tax to use for exempt treatment (optional).">
+                        <field name="tz_uae_vat_exempt_tax_id" options="{'no_create_edit': True}"/>
+                    </setting>
+                    <setting string="Out-of-Scope Tax" help="Sales tax to use for out-of-scope treatment (optional).">
+                        <field name="tz_uae_vat_out_scope_tax_id" options="{'no_create_edit': True}"/>
+                    </setting>
+                </block>
             </xpath>
         </field>
     </record>
