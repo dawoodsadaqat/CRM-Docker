@@ -5,6 +5,34 @@ from odoo.exceptions import UserError
 class TzCommission(models.Model):
     _inherit = "tz.commission"
 
+    def _get_company_tax_mapping(self):
+        self.ensure_one()
+        company = self.company_id
+        return {
+            "standard_5": company.tz_uae_vat_standard_tax_id,
+            "zero_rated": company.tz_uae_vat_zero_tax_id,
+            "exempt": company.tz_uae_vat_exempt_tax_id,
+            "out_of_scope": company.tz_uae_vat_out_scope_tax_id,
+        }
+
+    def _resolve_vat_treatment(self):
+        self.ensure_one()
+        if self.property_unit_id and self.property_unit_id.vat_treatment:
+            return self.property_unit_id.vat_treatment
+        return "standard_5"
+
+    def _get_tax_from_vat_treatment(self):
+        self.ensure_one()
+        treatment = self._resolve_vat_treatment()
+        tax = self._get_company_tax_mapping().get(treatment)
+
+        # standard rate preserves legacy behavior if mapping is absent
+        if treatment == "standard_5" and not tax:
+            return self._get_uae_output_vat_tax()
+
+        # zero/exempt/out-of-scope should stay untaxed when no mapping is configured
+        return tax
+
     customer_invoice_id = fields.Many2one(
         "account.move",
         string="Customer Invoice",
@@ -163,7 +191,7 @@ class TzCommission(models.Model):
             if amount <= 0:
                 raise UserError(_("Agency commission amount must be greater than zero."))
 
-            vat_tax = rec._get_uae_output_vat_tax() if rec.vat_applicable else False
+            vat_tax = rec._get_tax_from_vat_treatment() if rec.vat_applicable else False
 
             move = self.env["account.move"].create({
                 "move_type": "out_invoice",
