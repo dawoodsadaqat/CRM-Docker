@@ -33,6 +33,29 @@ class TzCommission(models.Model):
         # zero/exempt/out-of-scope should stay untaxed when no mapping is configured
         return tax
 
+    def _validate_uae_vat_compliance(self, partner, vat_tax):
+        self.ensure_one()
+
+        if not self.company_id.tz_enforce_uae_vat_compliance:
+            return
+
+        treatment = self._resolve_vat_treatment()
+        if not self.company_id.vat:
+            raise UserError(_("Company TRN/VAT number is required for UAE VAT-compliant invoicing."))
+
+        taxable_treatments = ("standard_5", "zero_rated")
+        if treatment in taxable_treatments and not partner.vat:
+            raise UserError(_("Customer TRN/VAT number is required for taxable UAE VAT invoices."))
+
+        if treatment == "standard_5" and not vat_tax:
+            raise UserError(_("Standard-rated VAT treatment requires a configured output VAT tax."))
+
+        if treatment in ("exempt", "out_of_scope") and vat_tax:
+            raise UserError(_("Exempt/Out-of-Scope treatment must not apply output VAT tax."))
+
+        if treatment == "zero_rated" and vat_tax and vat_tax.amount != 0:
+            raise UserError(_("Zero-rated treatment must use a 0% sales tax."))
+
     customer_invoice_id = fields.Many2one(
         "account.move",
         string="Customer Invoice",
@@ -192,6 +215,7 @@ class TzCommission(models.Model):
                 raise UserError(_("Agency commission amount must be greater than zero."))
 
             vat_tax = rec._get_tax_from_vat_treatment() if rec.vat_applicable else False
+            rec._validate_uae_vat_compliance(partner, vat_tax)
 
             move = self.env["account.move"].create({
                 "move_type": "out_invoice",

@@ -4,6 +4,13 @@ from odoo import fields, models
 class ResCompany(models.Model):
     _inherit = "res.company"
 
+    tz_enforce_uae_vat_compliance = fields.Boolean(
+        string="Enforce UAE VAT Compliance",
+        default=False,
+        help="When enabled, customer invoice creation enforces UAE VAT checks "
+             "for TRN presence and VAT-treatment tax mapping consistency.",
+    )
+
     tz_uae_vat_standard_tax_id = fields.Many2one(
         "account.tax",
         string="UAE VAT Standard Tax",

@@ -4,6 +4,11 @@ from odoo import fields, models
 class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
+    tz_enforce_uae_vat_compliance = fields.Boolean(
+        related="company_id.tz_enforce_uae_vat_compliance",
+        readonly=False,
+    )
+
     tz_uae_vat_standard_tax_id = fields.Many2one(
         related="company_id.tz_uae_vat_standard_tax_id",
         readonly=False,
