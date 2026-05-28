@@ -35,4 +35,56 @@
 
         </field>
     </record>
+
+    <record id="view_crm_lead_kanban_call_center" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.call.center</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//templates/t[@t-name='kanban-box']//div[contains(@class, 'o_kanban_record_bottom')]" position="inside">
+                <div class="d-flex gap-1 mt-2">
+                    <button name="action_call_customer"
+                            type="object"
+                            class="btn btn-sm btn-outline-primary"
+                            title="Call Customer"
+                            aria-label="Call Customer">
+                        📞
+                    </button>
+                    <button name="action_whatsapp_chat"
+                            type="object"
+                            class="btn btn-sm btn-outline-success"
+                            title="Send WhatsApp Message"
+                            aria-label="Send WhatsApp Message">
+                        💬
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_pipeline_kanban_call_center" model="ir.ui.view">
+        <field name="name">crm.lead.pipeline.kanban.call.center</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//templates/t[@t-name='kanban-box']//div[contains(@class, 'o_kanban_record_bottom')]" position="inside">
+                <div class="d-flex gap-1 mt-2">
+                    <button name="action_call_customer"
+                            type="object"
+                            class="btn btn-sm btn-outline-primary"
+                            title="Call Customer"
+                            aria-label="Call Customer">
+                        📞
+                    </button>
+                    <button name="action_whatsapp_chat"
+                            type="object"
+                            class="btn btn-sm btn-outline-success"
+                            title="Send WhatsApp Message"
+                            aria-label="Send WhatsApp Message">
+                        💬
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
 </odoo>
