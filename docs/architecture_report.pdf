@@ -1,0 +1,58 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 5 0 R ] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 718 >>
+stream
+BT
+/F1 10 Tf
+36 800 Td
+14 TL
+(# CRM-Docker Architecture Deliverables) Tj
+T* () Tj
+T* (## 1\) Visual Dependency Graph) Tj
+T* () Tj
+T* (- DOT source: `docs/dependency_graph.dot`) Tj
+T* (- Rendered image: `docs/dependency_graph.png`) Tj
+T* () Tj
+T* (## 2\) Field Dictionary \(CSV\)) Tj
+T* () Tj
+T* (- File: `docs/model_field_dictionary.csv`) Tj
+T* () Tj
+T* (Columns:) Tj
+T* (- module) Tj
+T* (- model_or_inherit) Tj
+T* (- class_name) Tj
+T* (- field_name) Tj
+T* (- field_type) Tj
+T* (- source_file) Tj
+T* () Tj
+T* (## 3\) Notes) Tj
+T* () Tj
+T* (- Module dependency edges are generated from each module `__manifest__.py` `depends`.) Tj
+T* (- Model links are inferred from model references found in model Python files.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000117 00000 n 
+0000000187 00000 n 
+0000000956 00000 n 
+trailer << /Size 6 /Root 1 0 R >>
+startxref
+1082
+%%EOF
