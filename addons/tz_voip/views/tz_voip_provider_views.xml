@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_tz_voip_provider_tree" model="ir.ui.view">
+        <field name="name">tz.voip.provider.tree</field>
+        <field name="model">tz.voip.provider</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="provider_type"/>
+                <field name="call_mode"/>
+                <field name="host"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_tz_voip_provider_form" model="ir.ui.view">
+        <field name="name">tz.voip.provider.form</field>
+        <field name="model">tz.voip.provider</field>
+        <field name="arch" type="xml">
+            <form string="VOIP Provider">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="provider_type"/>
+                            <field name="call_mode"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
+                        </group>
+
+                        <group>
+                            <field name="host"/>
+                            <field name="port"/>
+                            <field name="username"/>
+                            <field name="password" password="True"/>
+                            <field name="default_context"/>
+                        </group>
+                    </group>
+
+                    <group string="Webhook">
+                        <field name="webhook_api_key"/>
+                        <field name="webhook_url" readonly="1"/>
+                        <field name="recording_base_url"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tz_voip_provider" model="ir.actions.act_window">
+        <field name="name">VOIP Providers</field>
+        <field name="res_model">tz.voip.provider</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tz_voip_root"
+              name="VOIP"
+              parent="crm.crm_menu_root"
+              sequence="180"/>
+
+    <menuitem id="menu_tz_voip_provider"
+              name="Providers"
+              parent="menu_tz_voip_root"
+              action="action_tz_voip_provider"
+              sequence="10"/>
+
+</odoo>

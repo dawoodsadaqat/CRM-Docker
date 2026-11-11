@@ -1,17 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_crm_lead_form_site_visits" model="ir.ui.view">
-        <field name="name">crm.lead.form.site.visits</field>
+
+    <record id="view_crm_lead_form_site_visit" model="ir.ui.view">
+        <field name="name">crm.lead.form.site.visit</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_create_site_visit"
+                        string="Create Site Visit"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-map-marker"/>
+
+                <button name="action_book_meeting"
+                        string="Book Meeting"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-calendar"/>
+            </xpath>
+
             <xpath expr="//div[@name='button_box']" position="inside">
+
                 <button name="action_view_site_visits"
                         type="object"
                         class="oe_stat_button"
-                        icon="fa-calendar">
-                    <field name="site_visit_count" widget="statinfo" string="Site Visits"/>
+                        icon="fa-map-marker">
+                    <field name="site_visit_count"
+                           widget="statinfo"
+                           string="Site Visits"/>
                 </button>
+
+                <button name="action_view_meetings"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-calendar">
+                    <field name="meeting_count"
+                           widget="statinfo"
+                           string="Meetings"/>
+                </button>
+
             </xpath>
+
         </field>
     </record>
+
 </odoo>

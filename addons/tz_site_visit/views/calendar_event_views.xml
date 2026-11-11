@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_calendar_event_form_tz_lead_meeting" model="ir.ui.view">
+        <field name="name">calendar.event.form.tz.lead.meeting</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Hide default Odoo online meeting fields when meeting is in person -->
+            <xpath expr="//field[@name='videocall_location']" position="attributes">
+                <attribute name="invisible">meeting_type == 'in_person'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='location']" position="attributes">
+                <attribute name="invisible">meeting_type == 'in_person'</attribute>
+            </xpath>
+
+            <xpath expr="//sheet" position="inside">
+
+                <group string="Lead Meeting">
+                    <group>
+                        <field name="lead_id"/>
+                        <field name="site_visit_id"/>
+                        <field name="meeting_type"/>
+                        <field name="meeting_status"/>
+                    </group>
+                </group>
+
+                <group string="In Person Meeting Location"
+                       invisible="meeting_type != 'in_person'">
+
+                    <group>
+                        <field name="in_person_location"/>
+                        <field name="meeting_latitude"/>
+                        <field name="meeting_longitude"/>
+                        <field name="meeting_location_captured_at" readonly="1"/>
+                    </group>
+
+                    <group>
+                        <field name="meeting_map_url" readonly="1"/>
+
+                        <button name="action_capture_current_location"
+                                string="Capture Current Location"
+                                type="object"
+                                class="btn-primary"/>
+
+                        <button name="action_open_meeting_map"
+                                string="Open Map"
+                                type="object"
+                                class="btn-secondary"
+                                invisible="not meeting_map_url"/>
+                    </group>
+
+                </group>
+
+                <group string="Meeting Outcome">
+                    <field name="meeting_outcome" nolabel="1"/>
+                </group>
+
+                <group string="Meeting Completion">
+                    <button name="action_mark_meeting_done"
+                            string="Mark Meeting Done"
+                            type="object"
+                            class="btn-primary"
+                            invisible="meeting_status == 'done'"/>
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

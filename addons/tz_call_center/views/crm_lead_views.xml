@@ -1,4 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- Lead / Opportunity Form Buttons -->
     <record id="view_crm_lead_form_call_center" model="ir.ui.view">
         <field name="name">crm.lead.form.call.center</field>
         <field name="model">crm.lead</field>
@@ -6,20 +9,25 @@
         <field name="arch" type="xml">
 
             <xpath expr="//header" position="inside">
+
                 <button name="action_call_customer"
-        		string="📞 Call"
-        		type="object"
-        		class="btn-primary"/>
+                        string="Call"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-phone"/>
+
+                <button name="action_sms_customer"
+                        string="SMS"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-comment"/>
 
                 <button name="action_whatsapp_chat"
-                        string="💬 WhatsApp"
+                        string="WhatsApp"
                         type="object"
-                        class="btn-success"/>
+                        class="btn-success"
+                        icon="fa-whatsapp"/>
 
-                <button name="action_whatsapp_call"
-                        string="📲 WA Call"
-                        type="object"
-                        class="btn-secondary"/>
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -35,4 +43,43 @@
 
         </field>
     </record>
+
+
+    <!-- Pipeline / Kanban Card Buttons -->
+    <record id="view_crm_lead_kanban_call_sms_whatsapp" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.call.sms.whatsapp</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//t[@t-name='kanban-box']//div[contains(@class, 'oe_kanban_content')]" position="inside">
+
+                <div class="mt8 d-flex gap-1 flex-wrap">
+                    <a name="action_call_customer"
+                       type="object"
+                       role="button"
+                       class="btn btn-sm btn-primary">
+                        <i class="fa fa-phone"/> Call
+                    </a>
+
+                    <a name="action_sms_customer"
+                       type="object"
+                       role="button"
+                       class="btn btn-sm btn-secondary">
+                        <i class="fa fa-comment"/> SMS
+                    </a>
+
+                    <a name="action_whatsapp_chat"
+                       type="object"
+                       role="button"
+                       class="btn btn-sm btn-success">
+                        <i class="fa fa-whatsapp"/> WhatsApp
+                    </a>
+                </div>
+
+            </xpath>
+
+        </field>
+    </record>
+
 </odoo>

@@ -1,4 +1,6 @@
-from odoo import _, models, fields
+from urllib.parse import quote
+
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
@@ -23,10 +25,10 @@ class CrmLead(models.Model):
     def _get_clean_phone(self):
         self.ensure_one()
 
-        phone = self.phone or self.mobile
+        phone = self.mobile or self.phone
 
         if not phone:
-            raise UserError(_("No phone number available on this lead."))
+            raise UserError(_("No phone number is available on this lead."))
 
         return (
             phone.replace(" ", "")
@@ -62,7 +64,7 @@ class CrmLead(models.Model):
                 "default_lead_id": self.id,
                 "default_customer_id": self.partner_id.id if self.partner_id else False,
                 "default_agent_id": self.user_id.id if self.user_id else self.env.user.id,
-                "default_phone_number": self.phone or self.mobile,
+                "default_phone_number": self.mobile or self.phone,
             },
         }
 
@@ -73,7 +75,7 @@ class CrmLead(models.Model):
 
         self._create_call_log(
             phone=phone,
-            notes=_("Manual call initiated from CRM header button.")
+            notes=_("Manual call initiated from CRM lead.")
         )
 
         return {
@@ -84,6 +86,24 @@ class CrmLead(models.Model):
             },
         }
 
+    def action_sms_customer(self):
+        self.ensure_one()
+
+        phone = self._get_clean_phone()
+
+        self._create_call_log(
+            phone=phone,
+            notes=_("SMS initiated from CRM lead.")
+        )
+
+        sms_body = _("Hello, this is regarding your property inquiry.")
+
+        return {
+            "type": "ir.actions.act_url",
+            "url": "sms:%s?body=%s" % (phone, quote(sms_body)),
+            "target": "new",
+        }
+
     def action_whatsapp_chat(self):
         self.ensure_one()
 
@@ -92,12 +112,12 @@ class CrmLead(models.Model):
 
         self._create_call_log(
             phone=phone,
-            notes=_("WhatsApp chat initiated from CRM.")
+            notes=_("WhatsApp chat initiated from CRM lead.")
         )
 
         return {
             "type": "ir.actions.act_url",
-            "url": f"https://wa.me/{whatsapp_phone}",
+            "url": "https://wa.me/%s" % whatsapp_phone,
             "target": "new",
         }
 
@@ -109,11 +129,11 @@ class CrmLead(models.Model):
 
         self._create_call_log(
             phone=phone,
-            notes=_("WhatsApp call attempt initiated from CRM.")
+            notes=_("WhatsApp call attempt initiated from CRM lead.")
         )
 
         return {
             "type": "ir.actions.act_url",
-            "url": f"https://wa.me/{whatsapp_phone}",
+            "url": "https://wa.me/%s" % whatsapp_phone,
             "target": "new",
         }

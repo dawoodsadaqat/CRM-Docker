@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="view_tz_site_visit_tree" model="ir.ui.view">
         <field name="name">tz.site.visit.tree</field>
         <field name="model">tz.site.visit</field>
@@ -13,6 +15,7 @@
                 <field name="area"/>
                 <field name="sale_price"/>
                 <field name="status"/>
+                <field name="meeting_event_id"/>
             </tree>
         </field>
     </record>
@@ -22,6 +25,24 @@
         <field name="model">tz.site.visit</field>
         <field name="arch" type="xml">
             <form string="Site Visit">
+                <header>
+                    <button name="action_create_calendar_meeting"
+                            string="Create Calendar Meeting"
+                            type="object"
+                            class="btn-primary"
+                            invisible="meeting_event_id"/>
+
+                    <button name="action_open_calendar_meeting"
+                            string="Open Calendar Meeting"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="not meeting_event_id"/>
+
+                    <field name="status"
+                           widget="statusbar"
+                           statusbar_visible="scheduled,confirmed,completed,interested,negotiation,closed,lost,cancelled"/>
+                </header>
+
                 <sheet>
                     <group>
                         <group>
@@ -30,6 +51,7 @@
                             <field name="customer_id"/>
                             <field name="agent_id"/>
                             <field name="visit_datetime"/>
+                            <field name="meeting_event_id" readonly="1"/>
                         </group>
 
                         <group>
@@ -37,7 +59,6 @@
                             <field name="property_type" readonly="1"/>
                             <field name="area" readonly="1"/>
                             <field name="sale_price" readonly="1"/>
-                            <field name="status"/>
                         </group>
                     </group>
 
@@ -51,7 +72,30 @@
                         </page>
                     </notebook>
                 </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
+        </field>
+    </record>
+
+    <record id="view_tz_site_visit_calendar" model="ir.ui.view">
+        <field name="name">tz.site.visit.calendar</field>
+        <field name="model">tz.site.visit</field>
+        <field name="arch" type="xml">
+            <calendar string="Site Visits"
+                      date_start="visit_datetime"
+                      color="agent_id">
+                <field name="name"/>
+                <field name="lead_id"/>
+                <field name="customer_id"/>
+                <field name="agent_id"/>
+                <field name="property_unit_id"/>
+                <field name="status"/>
+            </calendar>
         </field>
     </record>
 
@@ -73,6 +117,7 @@
                 <filter string="Interested" name="interested" domain="[('status','=','interested')]"/>
                 <filter string="Negotiation" name="negotiation" domain="[('status','=','negotiation')]"/>
                 <filter string="Lost" name="lost" domain="[('status','=','lost')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('status','=','cancelled')]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Agent" name="group_agent" context="{'group_by':'agent_id'}"/>
@@ -87,12 +132,14 @@
     <record id="action_tz_site_visit" model="ir.actions.act_window">
         <field name="name">Site Visits</field>
         <field name="res_model">tz.site.visit</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,calendar,form</field>
         <field name="search_view_id" ref="view_tz_site_visit_search"/>
     </record>
+
     <menuitem id="menu_tz_site_visit_root"
-          name="Site Visits"
-          parent="crm.crm_menu_root"
-          action="action_tz_site_visit"
-          sequence="75"/>
+              name="Site Visits"
+              parent="crm.crm_menu_root"
+              action="action_tz_site_visit"
+              sequence="75"/>
+
 </odoo>

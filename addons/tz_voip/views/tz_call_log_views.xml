@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_tz_call_log_tree_voip" model="ir.ui.view">
+        <field name="name">tz.call.log.tree.voip</field>
+        <field name="model">tz.call.log</field>
+        <field name="inherit_id" ref="tz_call_center.view_tz_call_log_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree" position="inside">
+                <field name="provider_id" optional="hide"/>
+                <field name="source_extension" optional="show"/>
+                <field name="destination_number" optional="show"/>
+                <field name="external_call_id" optional="hide"/>
+                <field name="linked_call_id" optional="hide"/>
+                <field name="started_at" optional="hide"/>
+                <field name="answered_at" optional="hide"/>
+                <field name="ended_at" optional="hide"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="view_tz_call_log_form_voip" model="ir.ui.view">
+        <field name="name">tz.call.log.form.voip</field>
+        <field name="model">tz.call.log</field>
+        <field name="inherit_id" ref="tz_call_center.view_tz_call_log_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet" position="inside">
+
+                <group string="VOIP Details">
+                    <group>
+                        <field name="provider_id"/>
+                        <field name="source_extension"/>
+                        <field name="destination_number"/>
+                    </group>
+
+                    <group>
+                        <field name="external_call_id"/>
+                        <field name="linked_call_id"/>
+                    </group>
+                </group>
+
+                <group string="VOIP Timing">
+                    <group>
+                        <field name="started_at"/>
+                        <field name="answered_at"/>
+                        <field name="ended_at"/>
+                    </group>
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

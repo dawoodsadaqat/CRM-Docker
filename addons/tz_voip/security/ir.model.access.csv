@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tz_voip_provider_admin,tz.voip.provider.admin,model_tz_voip_provider,base.group_system,1,1,1,1
+access_tz_call_log_user,tz.call.log.user,model_tz_call_log,base.group_user,1,1,1,0
+access_tz_call_log_admin,tz.call.log.admin,model_tz_call_log,base.group_system,1,1,1,1
